@@ -26,7 +26,7 @@ pub struct Options {
     #[clap(
         short,
         long,
-        default_value = "ngrams/deu_mixed_wiki_web_0.6_eng_news_typical_wiki_web_0.4"
+        default_value = "ngrams/eng_wiki_1m"
     )]
     pub ngrams: String,
 
@@ -35,7 +35,7 @@ pub struct Options {
     pub eval_parameters: String,
 
     /// Filename of layout configuration file to use
-    #[clap(short, long, default_value = "config/keyboard/standard.yml")]
+    #[clap(short, long, default_value = "config/keyboard/standard_qwerty_ansi.yml")]
     pub layout_config: String,
 
     /// Filename of corpus file to use instead of ngram files
