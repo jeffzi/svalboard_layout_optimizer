@@ -96,6 +96,16 @@ impl NeoLayoutGenerator {
         }
     }
 
+    /// Generate the base layout intrinsic to the generator
+    pub fn generate_base(&self) -> Result<Layout> {
+        Layout::new(
+            self.base_layout_symbols.clone(),
+            self.fixed_keys.clone(),
+            self.keyboard.clone(),
+            self.modifiers.clone(),
+        )
+    }
+
     /// Generate a [`NeoLayoutGenerator`] from a YAML file
     pub fn from_yaml_file(filename: &str, keyboard: Arc<Keyboard>) -> Result<Self> {
         let f = File::open(filename)?;
@@ -168,6 +178,11 @@ impl NeoLayoutGenerator {
 impl LayoutGenerator for NeoLayoutGenerator {
     /// Generate a Neo variant [`Layout`] from a given string representation of its base layer (only non-fixed keys)
     fn generate(&self, layout_keys: &str) -> Result<Layout> {
+        // XXX: sort of a hack, but: empty strings result in the default layout
+        if layout_keys.is_empty() {
+            return self.generate_base();
+        }
+
         let chars: Vec<char> = layout_keys.chars().collect();
 
         let char_set: AHashSet<char> = AHashSet::from_iter(chars.clone());
