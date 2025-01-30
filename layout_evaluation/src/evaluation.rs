@@ -48,6 +48,7 @@ pub struct MetricParameters {
     pub key_costs: Option<WeightedParams<key_costs::Parameters>>,
     pub modifier_usage: Option<WeightedParams<modifier_usage::Parameters>>,
 
+    pub cluster_rolls: Option<WeightedParams<cluster_rolls::Parameters>>,
     pub symmetric_handswitches: Option<WeightedParams<symmetric_handswitches::Parameters>>,
     pub finger_repeats: Option<WeightedParams<finger_repeats::Parameters>>,
     pub manual_bigram_penalty: Option<WeightedParams<manual_bigram_penalty::Parameters>>,
@@ -148,6 +149,7 @@ impl Evaluator {
         add_metric!(unigram_metric, key_costs, KeyCost);
 
         // bigram metrics
+        add_metric!(bigram_metric, cluster_rolls, ClusterRolls);
         add_metric!(bigram_metric, finger_repeats, FingerRepeats);
         //add_metric!(bigram_metric, manual_bigram_penalty, ManualBigramPenalty);
         //add_metric!(bigram_metric, movement_pattern, MovementPattern);

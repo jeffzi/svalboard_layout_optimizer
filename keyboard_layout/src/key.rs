@@ -285,6 +285,32 @@ impl<T: Copy + fmt::Display> fmt::Display for HandFingerMap<T> {
     }
 }
 
+/// Represents which part of a cluster each key belongs to
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Deserialize, Debug)]
+#[repr(u8)]
+pub enum Direction {
+    // finger
+    North,
+    Out,
+    Center,
+    In,
+    South,
+
+    // thumb
+    Pad,
+    DoubleDown,
+    Nail,
+    Up,
+    Down,
+    Knuckle,
+}
+
+impl Default for Direction {
+    fn default() -> Self {
+        Direction::Center
+    }
+}
+
 /// The [`Key`] struct represents a physical key on the keyboard. It provides various information about the location
 /// of the key it represents and how it is (supposed to be) used, e.g. which hand and finger shall press it, how
 /// "uncomfortable" it is to reach it (in terms of a cost valua), or if it forces the hand off the home row.
@@ -295,6 +321,9 @@ pub struct Key {
 
     /// Finger to press the key
     pub finger: Finger,
+
+    /// Direction the key is in
+    pub direction: Direction,
 
     /// Row and column position of the key
     pub matrix_position: MatrixPosition,

@@ -1,6 +1,6 @@
 //! This module provides a struct representing a keyboard.
 
-use crate::key::{Finger, Hand, HandFingerMap, Key, MatrixPosition, Position};
+use crate::key::{Finger, Hand, HandFingerMap, Key, MatrixPosition, Position, Direction};
 
 use ahash::{AHashMap, AHashSet};
 use anyhow::Result;
@@ -40,6 +40,7 @@ pub struct KeyboardYAML {
     positions: Vec<Vec<Position>>,
     hands: Vec<Vec<Hand>>,
     fingers: Vec<Vec<Finger>>,
+    directions: Vec<Vec<Direction>>,
     key_costs: Vec<Vec<f64>>,
     symmetries: Vec<Vec<u8>>,
     unbalancing_positions: Vec<Vec<Position>>,
@@ -72,6 +73,7 @@ impl KeyboardYAML {
         let mut lengths = AHashSet::default();
         lengths.insert(flat_matrix_positions.len());
         lengths.insert(flat_positions.len());
+        lengths.insert(self.directions.concat().len());
         lengths.insert(self.hands.concat().len());
         lengths.insert(self.fingers.concat().len());
         lengths.insert(self.key_costs.concat().len());
@@ -105,16 +107,18 @@ impl Keyboard {
             .zip(k.fingers.into_iter().flatten())
             .zip(k.matrix_positions.into_iter().flatten())
             .zip(k.positions.into_iter().flatten())
+            .zip(k.directions.into_iter().flatten())
             .zip(k.symmetries.into_iter().flatten())
             .zip(k.key_costs.into_iter().flatten())
             .zip(k.unbalancing_positions.into_iter().flatten())
             .map(
                 |(
-                    (((((hand, finger), matrix_position), position), symmetry_index), cost),
+                    ((((((hand, finger), matrix_position), position), direction), symmetry_index), cost),
                     unbalancing,
                 )| Key {
                     hand,
                     finger,
+                    direction,
                     matrix_position,
                     position,
                     symmetry_index,

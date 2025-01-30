@@ -100,6 +100,28 @@ keyboard:
       [13, 5], [14, 5], [15, 5],
     ]
 
+  directions:
+    # fingers
+    - [
+      # left hand
+      North, Out, Center, In, South,
+      North, Out, Center, In, South,
+      North, Out, Center, In, South,
+      North, Out, Center, In, South,
+
+      # right hand
+      North, In, Center, Out, South,
+      North, In, Center, Out, South,
+      North, In, Center, Out, South,
+      North, In, Center, Out, South,
+    ]
+
+    # thumbs (left, right)
+    - [
+      Pad, DoubleDown, Nail, Up, Down, Knuckle,
+      Nail, DoubleDown, Pad, Knuckle, Down, Up,
+    ]
+
   hands:
     # fingers
     - [
