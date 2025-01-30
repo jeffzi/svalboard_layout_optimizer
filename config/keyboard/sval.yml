@@ -256,48 +256,48 @@ base_layout:
     # fingers
     - [
       # left pinky
-             ["'"],
-      [ ""], ["a"], [ ""],
-             [";"],
+                  ["'", "\""],
+      [ "",  ""], ["a", "A"], [ "",  ""],
+                  [";", ":"],
       # left ring
-             [","],
-      [ ""], ["o"], ["x"],
-             ["q"],
+                  [",", "?"],
+      [ "",  ""], ["o", "O"], ["x", "X"],
+                  ["q", "Q"],
       # left middle
-             ["."],
-      [ ""], ["e"], ["y"],
-             ["j"],
+                  [".", "!"],
+      [ "",  ""], ["e", "E"], ["y", "Y"],
+                  ["j", "J"],
       # left index
-             ["p"],
-      [ ""], ["u"], ["i"],
-             ["k"],
+                  ["p", "P"],
+      [ "",  ""], ["u", "U"], ["i", "I"],
+                  ["k", "K"],
 
       # left index
-             ["g"],
-      ["d"], ["h"], [ ""],
-             ["m"],
+                  ["g", "G"],
+      ["d", "D"], ["h", "H"], [ "",  ""],
+                  ["m", "M"],
       # left middle
-             ["c"],
-      ["f"], ["t"], [ ""],
-             ["w"],
+                  ["c", "C"],
+      ["f", "F"], ["t", "T"], [ "",  ""],
+                  ["w", "W"],
       # left ring
-             ["r"],
-      ["b"], ["n"], [ ""],
-             ["v"],
+                  ["r", "R"],
+      ["b", "B"], ["n", "N"], [ "",  ""],
+                  ["v", "V"],
       # left pinky
-             ["l"],
-      [ ""], ["s"], [ ""],
-             ["z"],
+                  ["l", "L"],
+      [ "",  ""], ["s", "S"], [ "",  ""],
+                  ["z", "Z"],
     ]
 
     # thumbs
     - [
       # left thumb
-      [ ""], [ ""], [ ""],
+      [" "], [ ""], [ ""],
       [ ""], [ ""], [ ""],
       # right thumb
       [ ""], [ ""], [ ""],
-      [ ""], [ ""], [ ""],
+      [ ""], ["⇧"], [ ""],
     ]
 
   fixed_keys:
@@ -315,8 +315,8 @@ base_layout:
 
     # thumbs
     - [
-      false, false, false, false, false, false,
-      false, false, false, false, false, false,
+      true, true, true, true, true, true,
+      true, true, true, true, true, true,
     ]
 
   # everything else is pretty standard, modifiers TODO
@@ -334,9 +334,10 @@ base_layout:
   # "hold" and "one_shot" modifiers require a field "value" holding a list of
   # either matrix positions or symbols acting as modifiers
   modifiers:
+    # shift / first alternate layer
     - Left:
         type: hold
-        value: []
+        value: [[14, 5]]
       Right:
         type: hold
         value: []
