@@ -143,62 +143,62 @@ impl Evaluator {
         // unigram metrics
         add_metric!(unigram_metric, finger_balance, FingerBalance);
         add_metric!(unigram_metric, hand_disbalance, HandDisbalance);
-        add_metric!(unigram_metric, row_loads, RowLoads);
-        add_metric!(unigram_metric, modifier_usage, ModifierUsage);
+        //add_metric!(unigram_metric, row_loads, RowLoads);
+        //add_metric!(unigram_metric, modifier_usage, ModifierUsage);
         add_metric!(unigram_metric, key_costs, KeyCost);
 
         // bigram metrics
         add_metric!(bigram_metric, finger_repeats, FingerRepeats);
-        add_metric!(bigram_metric, manual_bigram_penalty, ManualBigramPenalty);
-        add_metric!(bigram_metric, movement_pattern, MovementPattern);
-        add_metric!(
-            bigram_metric,
-            no_handswitch_after_unbalancing_key,
-            NoHandSwitchAfterUnbalancingKey
-        );
-        add_metric!(bigram_metric, symmetric_handswitches, SymmetricHandswitches);
+        //add_metric!(bigram_metric, manual_bigram_penalty, ManualBigramPenalty);
+        //add_metric!(bigram_metric, movement_pattern, MovementPattern);
+        //add_metric!(
+        //    bigram_metric,
+        //    no_handswitch_after_unbalancing_key,
+        //    NoHandSwitchAfterUnbalancingKey
+        //);
+        //add_metric!(bigram_metric, symmetric_handswitches, SymmetricHandswitches);
 
         // trigram_metrics
-        add_metric!(
-            trigram_metric,
-            no_handswitch_in_trigram,
-            NoHandswitchInTrigram
-        );
-        add_metric!(trigram_metric, trigram_finger_repeats, TrigramFingerRepeats);
-        add_metric!(trigram_metric, trigram_rolls, TrigramRolls);
-        add_metric!(
-            trigram_metric,
-            irregularity,
-            Irregularity,
-            "add_bigram_metrics"
-        );
-        add_metric!(
-            trigram_metric,
-            secondary_bigrams,
-            SecondaryBigrams,
-            "add_bigram_metrics"
-        );
+        //add_metric!(
+        //    trigram_metric,
+        //    no_handswitch_in_trigram,
+        //    NoHandswitchInTrigram
+        //);
+        //add_metric!(trigram_metric, trigram_finger_repeats, TrigramFingerRepeats);
+        //add_metric!(trigram_metric, trigram_rolls, TrigramRolls);
+        //add_metric!(
+        //    trigram_metric,
+        //    irregularity,
+        //    Irregularity,
+        //    "add_bigram_metrics"
+        //);
+        //add_metric!(
+        //    trigram_metric,
+        //    secondary_bigrams,
+        //    SecondaryBigrams,
+        //    "add_bigram_metrics"
+        //);
 
-        add_metric!(layout_metric, kla_same_finger_words, KLASameFingerWords);
-        add_metric!(layout_metric, kla_home_key_words, KLAHomeKeyWords);
+        //add_metric!(layout_metric, kla_same_finger_words, KLASameFingerWords);
+        //add_metric!(layout_metric, kla_home_key_words, KLAHomeKeyWords);
 
-        add_metric!(bigram_metric, kla_distance, KLADistance);
-        add_metric!(bigram_metric, kla_finger_usage, KLAFingerUsage);
-        add_metric!(bigram_metric, kla_same_finger, KLASameFinger);
-        add_metric!(bigram_metric, kla_same_hand, KLASameHand);
+        //add_metric!(bigram_metric, kla_distance, KLADistance);
+        //add_metric!(bigram_metric, kla_finger_usage, KLAFingerUsage);
+        //add_metric!(bigram_metric, kla_same_finger, KLASameFinger);
+        //add_metric!(bigram_metric, kla_same_hand, KLASameHand);
 
-        add_metric!(trigram_metric, oxey_combined_trigram, OxeyCombinedTrigram);
+        //add_metric!(trigram_metric, oxey_combined_trigram, OxeyCombinedTrigram);
 
-        add_metric!(bigram_metric, oxey_sfbs, OxeySfbs);
-        add_metric!(bigram_metric, oxey_lsbs, OxeyLsbs);
-        add_metric!(trigram_metric, oxey_dsfbs, OxeyDsfbs);
-        add_metric!(trigram_metric, oxey_inward_rolls, OxeyInwardRolls);
-        add_metric!(trigram_metric, oxey_outward_rolls, OxeyOutwardRolls);
-        add_metric!(trigram_metric, oxey_onehands, OxeyOnehands);
-        add_metric!(trigram_metric, oxey_alternates, OxeyAlternates);
-        add_metric!(trigram_metric, oxey_alternates_sfs, OxeyAlternatesSfs);
-        add_metric!(trigram_metric, oxey_redirects, OxeyRedirects);
-        add_metric!(trigram_metric, oxey_bad_redirects, OxeyBadRedirects);
+        //add_metric!(bigram_metric, oxey_sfbs, OxeySfbs);
+        //add_metric!(bigram_metric, oxey_lsbs, OxeyLsbs);
+        //add_metric!(trigram_metric, oxey_dsfbs, OxeyDsfbs);
+        //add_metric!(trigram_metric, oxey_inward_rolls, OxeyInwardRolls);
+        //add_metric!(trigram_metric, oxey_outward_rolls, OxeyOutwardRolls);
+        //add_metric!(trigram_metric, oxey_onehands, OxeyOnehands);
+        //add_metric!(trigram_metric, oxey_alternates, OxeyAlternates);
+        //add_metric!(trigram_metric, oxey_alternates_sfs, OxeyAlternatesSfs);
+        //add_metric!(trigram_metric, oxey_redirects, OxeyRedirects);
+        //add_metric!(trigram_metric, oxey_bad_redirects, OxeyBadRedirects);
 
         self
     }
