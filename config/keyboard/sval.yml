@@ -140,45 +140,47 @@ keyboard:
   key_costs:
     - [
       # left pinky
-         0,
-      0, 0, 0,
-         0,
+         5,
+      6, 2, 4,
+         2,
       # left ring
-         0,
-      0, 0, 0,
-         0,
+         6,
+      8, 2, 5,
+         2,
       # left middle
-         0,
-      0, 0, 0,
-         0,
+         4,
+      7, 2, 7,
+         2,
       # left index
-         0,
-      0, 0, 0,
-         0,
+         3,
+      4, 2, 5,
+         2,
 
       # right index
-         0,
-      0, 0, 0,
-         0,
+         3,
+      5, 2, 4,
+         2,
       # right middle
-         0,
-      0, 0, 0,
-         0,
+         4,
+      7, 2, 7,
+         2,
       # right ring
-         0,
-      0, 0, 0,
-         0,
+         6,
+      5, 2, 8,
+         2,
       # right pinky
-         0,
-      0, 0, 0,
-         0,
+         5,
+      4, 2, 6,
+         2,
     ]
 
     - [
       # left thumb
-      0, 0, 0, 0, 0, 0,
+      2, 9, 5,
+      7, 3, 4,
       # right thumb
-      0, 0, 0, 0, 0, 0,
+      5, 9, 2,
+      4, 3, 7,
     ]
 
   unbalancing_positions:
