@@ -144,8 +144,8 @@ keyboard:
       6, 2, 4,
          2,
       # left ring
-         6,
-      8, 2, 5,
+         5,
+      8, 2, 6,
          2,
       # left middle
          4,
@@ -165,8 +165,8 @@ keyboard:
       7, 2, 7,
          2,
       # right ring
-         6,
-      5, 2, 8,
+         5,
+      6, 2, 8,
          2,
       # right pinky
          5,
@@ -177,10 +177,10 @@ keyboard:
     - [
       # left thumb
       2, 9, 5,
-      7, 3, 4,
+      6, 3, 4,
       # right thumb
       5, 9, 2,
-      4, 3, 7,
+      4, 3, 6,
     ]
 
   unbalancing_positions:
