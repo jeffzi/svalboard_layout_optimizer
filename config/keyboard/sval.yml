@@ -1,0 +1,339 @@
+# basically my rewrite of mbuffet's sval layout
+
+keyboard:
+  matrix_positions:
+    # finger keys (north west center east south)
+    - [
+      # left pinky
+               [ 2, 1],
+      [ 1, 2], [ 2, 2], [ 3, 2], 
+               [ 2, 3],
+      # left ring
+               [ 5, 1],
+      [ 4, 2], [ 5, 2], [ 6, 2], 
+               [ 5, 3],
+      # left middle
+               [ 8, 1],
+      [ 7, 2], [ 8, 2], [ 9, 2], 
+               [ 8, 3],
+      # left index
+               [11, 1],
+      [10, 2], [11, 2], [12, 2], 
+               [11, 3],
+
+      # right index
+               [14, 1],
+      [13, 2], [14, 2], [15, 2], 
+               [14, 3],
+      # right middle
+               [17, 1],
+      [16, 2], [17, 2], [18, 2], 
+               [17, 3],
+      # right ring
+               [20, 1],
+      [19, 2], [20, 2], [21, 2], 
+               [20, 3],
+      # right pinky
+               [23, 1],
+      [22, 2], [23, 2], [24, 2], 
+               [23, 3],
+    ]
+
+    # thumb keys (for left: pad double-down nail up down knuckle)
+    # basically, near-physical layout
+    - [
+      # left thumb
+      [10, 4], [11, 4], [12, 4],
+      [10, 5], [11, 5], [12, 5],
+      # right thumb
+      [13, 4], [14, 4], [15, 4],
+      [13, 5], [14, 5], [15, 5],
+    ]
+
+  # should actually just be the same as above
+  positions:
+    # finger keys (north west center east south)
+    - [
+      # left pinky
+               [ 2, 1],
+      [ 1, 2], [ 2, 2], [ 3, 2], 
+               [ 2, 3],
+      # left ring
+               [ 5, 1],
+      [ 4, 2], [ 5, 2], [ 6, 2], 
+               [ 5, 3],
+      # left middle
+               [ 8, 1],
+      [ 7, 2], [ 8, 2], [ 9, 2], 
+               [ 8, 3],
+      # left index
+               [11, 1],
+      [10, 2], [11, 2], [12, 2], 
+               [11, 3],
+
+      # right index
+               [14, 1],
+      [13, 2], [14, 2], [15, 2], 
+               [14, 3],
+      # right middle
+               [17, 1],
+      [16, 2], [17, 2], [18, 2], 
+               [17, 3],
+      # right ring
+               [20, 1],
+      [19, 2], [20, 2], [21, 2], 
+               [20, 3],
+      # right pinky
+               [23, 1],
+      [22, 2], [23, 2], [24, 2], 
+               [23, 3],
+    ]
+
+    # thumb keys (for left: pad double-down nail up down knuckle)
+    # basically, near-physical layout
+    - [
+      # left thumb
+      [10, 4], [11, 4], [12, 4],
+      [10, 5], [11, 5], [12, 5],
+      # right thumb
+      [13, 4], [14, 4], [15, 4],
+      [13, 5], [14, 5], [15, 5],
+    ]
+
+  hands:
+    # fingers
+    - [
+       Left,  Left,  Left,  Left,  Left,
+       Left,  Left,  Left,  Left,  Left,
+       Left,  Left,  Left,  Left,  Left,
+       Left,  Left,  Left,  Left,  Left,
+       Left,  Left,  Left,  Left,  Left,
+      Right, Right, Right, Right, Right,
+      Right, Right, Right, Right, Right,
+      Right, Right, Right, Right, Right,
+      Right, Right, Right, Right, Right,
+      Right, Right, Right, Right, Right,
+    ]
+
+    # thumbs
+    - [
+       Left,  Left,  Left,  Left,  Left,  Left,
+      Right, Right, Right, Right, Right, Right,
+    ]
+
+  fingers:
+    - [
+       Pinky,  Pinky,  Pinky,  Pinky,  Pinky,
+        Ring,   Ring,   Ring,   Ring,   Ring,
+      Middle, Middle, Middle, Middle, Middle,
+       Index,  Index,  Index,  Index,  Index,
+
+       Index,  Index,  Index,  Index,  Index,
+      Middle, Middle, Middle, Middle, Middle,
+        Ring,   Ring,   Ring,   Ring,   Ring,
+       Pinky,  Pinky,  Pinky,  Pinky,  Pinky,
+    ]
+
+    - [
+      Thumb, Thumb, Thumb, Thumb, Thumb, Thumb,
+      Thumb, Thumb, Thumb, Thumb, Thumb, Thumb,
+    ]
+
+  key_costs:
+    - [
+      # left pinky
+         0
+      0, 0, 0
+         0,
+      # left ring
+         0
+      0, 0, 0
+         0,
+      # left middle
+         0
+      0, 0, 0
+         0,
+      # left index
+         0
+      0, 0, 0
+         0,
+
+      # right index
+         0
+      0, 0, 0
+         0,
+      # right middle
+         0
+      0, 0, 0
+         0,
+      # right ring
+         0
+      0, 0, 0
+         0,
+      # right pinky
+         0
+      0, 0, 0
+         0,
+    ]
+
+    - [
+      # left thumb
+      0, 0, 0, 0, 0, 0,
+      # right thumb
+      0, 0, 0, 0, 0, 0,
+    ]
+
+  unbalancing_positions:
+    # fingers
+    - [
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+    ]
+
+    # thumbs
+    - [
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+      [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+    ]
+
+  symmetries:
+    # fingers
+    - [
+       1,  2,  3,  4,  5,
+       6,  7,  8,  9, 10,
+      11, 12, 13, 14, 15,
+      16, 17, 18, 19, 20,
+
+      20, 19, 18, 17, 16,
+      15, 14, 13, 12, 11,
+      10,  9,  8,  7,  6,
+       5,  4,  3,  2,  1,
+    ]
+
+    # thumbs
+    - [
+      21, 22, 23, 24,
+      24, 23, 22, 21,
+    ]
+
+  finger_resting_positions:
+    Left:
+      Pinky:  [ 2, 2]
+      Ring:   [ 5, 2]
+      Middle: [ 8, 2]
+      Index:  [11, 2]
+      Thumb:  [11, 5]
+
+    Right:
+      Thumb:  [14, 5]
+      Index:  [14, 2]
+      Middle: [17, 2]
+      Ring:   [20, 2]
+      Pinky:  [23, 2]
+
+  # this... just looks horrid in here, sorry
+  plot_template: |2
+     {{0}}     {{5}}     {{10}}     {{15}}     {{20}}     {{25}}     {{30}}     {{35}}
+    {{1}} {{2}} {{3}}   {{6}} {{7}} {{8}}   {{11}} {{12}} {{13}}   {{16}} {{17}} {{18}}   {{21}} {{22}} {{23}}   {{26}} {{27}} {{28}}   {{31}} {{32}} {{33}}   {{36}} {{37}} {{38}}
+     {{4}}     {{9}}     {{14}}     {{19}}     {{24}}     {{29}}     {{34}}     {{39}}
+
+                               {{40}} {{41}}     {{46}} {{47}}
+                               {{42}} {{43}}     {{48}} {{49}}
+                               {{44}} {{45}}     {{50}} {{51}}
+
+  plot_template_short: |2
+    {{0}}{{1}}{{2}}{{3}}{{4}}{{5}}{{6}}{{7}}{{8}}{{9}}{{10}}{{11}}{{12}}{{13}}{{14}}{{15}}{{16}}{{17}}{{18}}{{19}}{{20}}{{21}}{{22}}{{23}}{{24}}{{25}}{{26}}{{27}}{{28}}{{29}}{{30}}{{31}}{{32}}{{33}}{{34}}{{35}}{{36}}{{37}}{{38}}{{39}}{{40}}{{41}}{{42}}{{43}}{{44}}{{45}}{{46}}{{47}}{{48}}{{49}}{{50}}{{51}}
+
+# re. this: i'll start with the base layout of the sval
+base_layout:
+  keys:
+    # fingers
+    - [
+      # left pinky
+            [""],
+      [""], [""], [""]
+            [""],
+      # left ring
+            [""],
+      [""], [""], [""]
+            [""],
+      # left middle
+            [""],
+      [""], [""], [""]
+            [""],
+      # left index
+            [""],
+      [""], [""], [""]
+            [""],
+
+      # left index
+            [""],
+      [""], [""], [""]
+            [""],
+      # left middle
+            [""],
+      [""], [""], [""]
+            [""],
+      # left ring
+            [""],
+      [""], [""], [""]
+            [""],
+      # left pinky
+            [""],
+      [""], [""], [""]
+            [""],
+    ]
+
+    # thumbs
+    - [
+      [""], [""], [""], [""], [""], [""],
+      [""], [""], [""], [""], [""], [""],
+    ]
+
+  fixed_keys:
+    # fingers
+    - [
+      false, false, false, false, false,
+      false, false, false, false, false,
+      false, false, false, false, false,
+      false, false, false, false, false,
+      false, false, false, false, false,
+      false, false, false, false, false,
+      false, false, false, false, false,
+      false, false, false, false, false,
+    ]
+
+    # thumbs
+    - [
+      false, false, false, false, false, false,
+      false, false, false, false, false, false,
+    ]
+
+  # everything else is pretty standard, modifiers TODO
+
+  # for NeoLayoutGenerator:
+  # layers that shall not be permutated (starting from 0)
+  fixed_layers: []
+
+  # for GroupedLayoutGenerator:
+  # number of consecutive symbols from base layout to group together generating a layout
+  grouped_layers: 1
+
+  # modifier types can be "hold", "one_shot", and "long_press"
+  #
+  # "hold" and "one_shot" modifiers require a field "value" holding a list of
+  # either matrix positions or symbols acting as modifiers
+  modifiers:
+    - Left:
+        type: hold
+        value: []
+      Right:
+        type: hold
+        value: []
