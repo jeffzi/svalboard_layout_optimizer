@@ -6,6 +6,7 @@ use priority_queue::DoublePriorityQueue;
 use std::{env, fmt};
 
 pub mod cluster_rolls;
+pub mod scissoring;
 pub mod finger_repeats;
 pub mod kla_distance;
 pub mod kla_finger_usage;

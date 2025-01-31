@@ -61,6 +61,12 @@ impl Finger {
     pub fn distance(&self, other: &Finger) -> u8 {
         (*self as u8).abs_diff(*other as u8)
     }
+
+    /// Index of the finger in question, counting up from the thumb
+    #[inline(always)]
+    pub fn numeric_index(&self) -> u8 {
+        *self as u8
+    }
 }
 
 #[derive(Clone, Copy, PartialEq, Eq, Hash, Deserialize, Debug)]

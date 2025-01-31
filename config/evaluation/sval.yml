@@ -107,6 +107,25 @@ metrics:
         Index: 0.8
         Thumb: 1.0
 
+  # Scissoring, here, adds some nuance to movement_pattern: it accounts for the
+  # relative cost of changing direction on adjacent fingers (such as a south on
+  # ring followed by a north on middle). Of special note is any pattern that
+  # causes two laterals to move towards each other -- those are a pain and
+  # should be optimized against.
+  scissoring:
+    enabled: true
+    weight: 100.0
+    normalization:
+      type: weight_found
+      value: 1.0
+    params:
+      # cost for a south-north or north-south scissor
+      south_north_cost: 1.0
+      # cost for an inward lateral squeezing motion
+      lateral_squeeze_cost: 5.0
+      # cost for a lateral splay
+      lateral_splay_cost: 2.0
+
   # Depending on which fingers of the same hand are used to hit the keys of a bigram,
   # how many rows were crossed and in which direction the movement occurs, costs are
   # counted.
@@ -122,64 +141,34 @@ metrics:
       # cost: Cost to count for such a movement
       finger_switch_factor:
         - { from: [Left, Pinky],   to: [Left, Ring],    cost: 4 }
-        - { from: [Left, Pinky],   to: [Left, Middle],  cost: 2 }
+        - { from: [Left, Pinky],   to: [Left, Middle],  cost: 3 }
 
         - { from: [Left, Ring],    to: [Left, Pinky],   cost: 6 }
-        - { from: [Left, Ring],    to: [Left, Middle],  cost: 2 }
-        - { from: [Left, Ring],    to: [Left, Index], cost: 0.1 }
+        - { from: [Left, Ring],    to: [Left, Middle],  cost: 4 }
+        - { from: [Left, Ring],    to: [Left, Index], cost: 0.5 }
 
-        - { from: [Left, Middle],  to: [Left, Pinky],   cost: 3 }
+        - { from: [Left, Middle],  to: [Left, Pinky],   cost: 2 }
         - { from: [Left, Middle],  to: [Left, Ring],    cost: 5 }
-        - { from: [Left, Middle],  to: [Left, Index], cost: 0.6 }
+        - { from: [Left, Middle],  to: [Left, Index], cost: 0.2 }
 
-        - { from: [Left, Index], to: [Left, Pinky],   cost: 0.1 }
-        - { from: [Left, Index], to: [Left, Ring],    cost: 0.3 }
-        - { from: [Left, Index], to: [Left, Middle],  cost: 0.9 }
+        - { from: [Left, Index],   to: [Left, Pinky],   cost: 0.1 }
+        - { from: [Left, Index],   to: [Left, Ring],    cost: 0.3 }
+        - { from: [Left, Index],   to: [Left, Middle],  cost: 0.7 }
 
         - { from: [Right, Pinky],   to: [Right, Ring],    cost: 4 }
-        - { from: [Right, Pinky],   to: [Right, Middle],  cost: 2 }
+        - { from: [Right, Pinky],   to: [Right, Middle],  cost: 3 }
 
         - { from: [Right, Ring],    to: [Right, Pinky],   cost: 6 }
-        - { from: [Right, Ring],    to: [Right, Middle],  cost: 2 }
-        - { from: [Right, Ring],    to: [Right, Index], cost: 0.1 }
+        - { from: [Right, Ring],    to: [Right, Middle],  cost: 4 }
+        - { from: [Right, Ring],    to: [Right, Index], cost: 0.5 }
 
-        - { from: [Right, Middle],  to: [Right, Pinky],   cost: 3 }
+        - { from: [Right, Middle],  to: [Right, Pinky],   cost: 2 }
         - { from: [Right, Middle],  to: [Right, Ring],    cost: 5 }
-        - { from: [Right, Middle],  to: [Right, Index], cost: 0.6 }
+        - { from: [Right, Middle],  to: [Right, Index], cost: 0.2 }
 
-        - { from: [Right, Index], to: [Right, Pinky],   cost: 0.1 }
-        - { from: [Right, Index], to: [Right, Ring],    cost: 0.3 }
-        - { from: [Right, Index], to: [Right, Middle],  cost: 0.9 }
-
-      # Finger lengths
-      finger_lengths:
-        Left:
-          Pinky: 1
-          Ring: 2
-          Middle: 3
-          Index: 2
-        Right:
-          Pinky: 1
-          Ring: 2
-          Middle: 3
-          Index: 2
-
-      # If the movement is directed downwards from a short towards a long
-      # or upwards from a long towards a short finger,
-      # the cost is multiplied by this factor
-      short_down_to_long_or_long_up_to_short_factor: 2.0
-
-      # The cost is multiplied by the same_row_offset plus number of crossed rows.
-      # If same_row_offset is zero, movement patterns on the same row have zero cost.
-      same_row_offset: 0.1
-
-      # If the movement involves unbalancing keys (horizontally or vertically), the corresponding
-      # unbalancing values are weighted with this factor and multiplied to the result.
-      unbalancing_factor: 0.5
-
-      # If a movement involves a lateral stretch (the keys are more columns apart than the fingers),
-      # (one plus) this factor is multiplied to the cost with the number of columns to stretch.
-      lateral_stretch_factor: 0.0
+        - { from: [Right, Index],   to: [Right, Pinky],   cost: 0.1 }
+        - { from: [Right, Index],   to: [Right, Ring],    cost: 0.3 }
+        - { from: [Right, Index],   to: [Right, Middle],  cost: 0.7 }
 
 ngrams:
   # Increase the weight of bigrams that have both an absolute weight and relative weight exceed
