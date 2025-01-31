@@ -77,27 +77,27 @@ metrics:
           Out: 2.0
           South: 0.0 # these feel *awesome*
         North:
-          Center: 4.0
+          Center: 5.0
           In: 3.0
           Out: 3.0
-          South: 5.0
+          South: 7.0
         South:
-          Center: 4.0
-          In: 4.0
-          North: 5.0
-          Out: 4.0
+          Center: 9.0
+          In: 5.0
+          North: 7.0
+          Out: 5.0
         In:
-          Center: 4.0
-          North: 5.0
-          Out: 7.0
+          Center: 7.0
+          North: 4.0
+          Out: 9.0
           South: 4.0
         Out:
-          Center: 4.0
-          In: 7.0
+          Center: 7.0
+          In: 9.0
           North: 5.0
           South: 4.0
         Pad:
-          Up: 0.0 # also delicious
+          Up: 1.0 # also delicious
         Up:
           Pad: 5.0
 
