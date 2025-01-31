@@ -163,11 +163,11 @@ impl Evaluator {
         //add_metric!(bigram_metric, symmetric_handswitches, SymmetricHandswitches);
 
         // trigram_metrics
-        //add_metric!(
-        //    trigram_metric,
-        //    no_handswitch_in_trigram,
-        //    NoHandswitchInTrigram
-        //);
+        add_metric!(
+            trigram_metric,
+            no_handswitch_in_trigram,
+            NoHandswitchInTrigram
+        );
         //add_metric!(trigram_metric, trigram_finger_repeats, TrigramFingerRepeats);
         //add_metric!(trigram_metric, trigram_rolls, TrigramRolls);
         //add_metric!(
@@ -176,12 +176,12 @@ impl Evaluator {
         //    Irregularity,
         //    "add_bigram_metrics"
         //);
-        //add_metric!(
-        //    trigram_metric,
-        //    secondary_bigrams,
-        //    SecondaryBigrams,
-        //    "add_bigram_metrics"
-        //);
+        add_metric!(
+            trigram_metric,
+            secondary_bigrams,
+            SecondaryBigrams,
+            "add_bigram_metrics"
+        );
 
         //add_metric!(layout_metric, kla_same_finger_words, KLASameFingerWords);
         //add_metric!(layout_metric, kla_home_key_words, KLAHomeKeyWords);

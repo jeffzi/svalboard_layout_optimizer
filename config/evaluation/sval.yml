@@ -9,16 +9,16 @@ metrics:
     params:
       # Intended factors for finger load. Thumb values are ignored.
       intended_loads:
-        [Left, Pinky]: 1.0
-        [Left, Ring]: 1.6
-        [Left, Middle]: 2.0
-        [Left, Index]: 2.0
-        [Left, Thumb]: 2.0
-        [Right, Thumb]: 2.0
-        [Right, Index]: 2.0
-        [Right, Middle]: 2.0
-        [Right, Ring]: 1.6
-        [Right, Pinky]: 1.0
+        [Left, Pinky]: 0.7
+        [Left, Ring]: 0.6
+        [Left, Middle]: 1.0
+        [Left, Index]: 1.0
+        [Left, Thumb]: 1.0
+        [Right, Thumb]: 1.0
+        [Right, Index]: 1.0
+        [Right, Middle]: 1.0
+        [Right, Ring]: 0.6
+        [Right, Pinky]: 0.7
 
   # Each hand's load all be close to 50%
   hand_disbalance:
@@ -97,7 +97,7 @@ metrics:
           South: 4.0
           Center: 4.0
         Pad:
-          Up: -1.0 # also delicious
+          Up: -0.5 # also delicious
 
       # Per-finger multipliers for the above
       finger_multipliers:
@@ -114,7 +114,7 @@ metrics:
   # should be optimized against.
   scissoring:
     enabled: true
-    weight: 100.0
+    weight: 500.0
     normalization:
       type: weight_found
       value: 1.0
@@ -125,13 +125,15 @@ metrics:
       lateral_squeeze_cost: 5.0
       # cost for a lateral splay
       lateral_splay_cost: 2.0
+      # cost for two identical laterals in sequence
+      lateral_series_cost: 2.0
 
   # Depending on which fingers of the same hand are used to hit the keys of a bigram,
   # how many rows were crossed and in which direction the movement occurs, costs are
   # counted.
   movement_pattern:
     enabled: true
-    weight: 100.0
+    weight: 70.0
     normalization:
       type: weight_found
       value: 1.0
@@ -169,6 +171,52 @@ metrics:
         - { from: [Right, Index],   to: [Right, Pinky],   cost: 0.1 }
         - { from: [Right, Index],   to: [Right, Ring],    cost: 0.3 }
         - { from: [Right, Index],   to: [Right, Middle],  cost: 0.7 }
+
+  # The `secondary_bigrams` metric evaluates all bigram metrics that can be computed on individual
+  # bigrams (in particular not the finger- and hand-balance metrics) for the bigram resulting from
+  # the first and last symbol of the trigram. Depending on whether the trigram involves a
+  # handswitch or not, factors are applied. Trigrams starting with one of a list of specified
+  # symbols are excluded.
+  secondary_bigrams:
+    enabled: true
+    weight: 0.1
+    normalization:
+      type: weight_found
+      value: 1.0
+    params:
+      # Multiply the cost with this factor if no handswitch occurs in the trigram
+      factor_no_handswitch: 0.7
+      # Multiply the cost with this factor if a handswitch occurs in the trigram
+      factor_handswitch: 0.8
+      # Mental pauses:
+      # Exclude the trirgrams which contain a mental pause and a follow up with a non-pause symbol.
+      # These trigrams do not need to be optimized, because they're "designed" to contain a pause.
+      # Mental pauses start with one of the defined `initial_pause_indicators` and then contain
+      # some kind of whitespace.
+      initial_pause_indicators: [",", ".", ";", ":"]
+
+  # If there is no handswitch in a trigram, a cost is counted. The cost is multiplied by factors
+  # depending on whether the three keys corresponding to the trigram are "in line" ("rolling
+  # movement") or if there is a directional change.
+  no_handswitch_in_trigram:
+    enabled: true
+    weight: 400.0
+    normalization:
+      type: weight_found
+      value: 1.0
+    params:
+      # Count this factor if there is a direction change in the trigram
+      factor_with_direction_change: 2.0
+      # Count this factor if there is no direction change in the trigram
+      factor_without_direction_change: 1.0
+      # Count this factor if all characters of the trigram lie on the same key
+      factor_same_key: 0.0
+      # Count this factor if the trigram contains at least finger repeats
+      factor_contains_finger_repeat: 2.0
+      # Count this factor if the starting and end key are the same (but no finger repeat)
+      factor_same_key_start_end: 0.5
+      # The trigram contains the index finger at least once
+      factor_contains_index: 0.5
 
 ngrams:
   # Increase the weight of bigrams that have both an absolute weight and relative weight exceed
