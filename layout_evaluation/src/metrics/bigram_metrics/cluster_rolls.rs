@@ -8,7 +8,7 @@ use super::BigramMetric;
 
 use ahash::AHashMap;
 use keyboard_layout::{
-    key::Direction,
+    key::{Direction, Finger},
     layout::{LayerKey, Layout},
 };
 
@@ -16,14 +16,16 @@ use serde::Deserialize;
 
 #[derive(Clone, Deserialize, Debug)]
 pub struct Parameters {
-    pub costs: AHashMap<Direction, AHashMap<Direction, f64>>,
     pub default_cost: f64,
+    pub costs: AHashMap<Direction, AHashMap<Direction, f64>>,
+    pub finger_multipliers: AHashMap<Finger, f64>,
 }
 
 #[derive(Clone, Debug)]
 pub struct ClusterRolls {
-    costs: AHashMap<Direction, AHashMap<Direction, f64>>,
     default_cost: f64,
+    costs: AHashMap<Direction, AHashMap<Direction, f64>>,
+    finger_multipliers: AHashMap<Finger, f64>,
 }
 
 impl ClusterRolls {
@@ -31,6 +33,7 @@ impl ClusterRolls {
         Self {
             costs: params.costs.clone(),
             default_cost: params.default_cost,
+            finger_multipliers: params.finger_multipliers.clone(),
         }
     }
 }
@@ -56,17 +59,23 @@ impl BigramMetric for ClusterRolls {
             return Some(0.0);
         }
 
+        let finger = k1.key.finger; // same for k1, k2
         let dir_from = k1.key.direction;
         let dir_to = k2.key.direction;
 
         let base_cost = match self.costs.get(&dir_from) {
             Some(m) => match m.get(&dir_to) {
-                Some(cost) => *cost,
+                Some(base_cost) => *base_cost,
                 _ => self.default_cost,
             }
             _ => self.default_cost,
         };
 
-        Some(weight * base_cost)
+        let cost = weight * base_cost * (match self.finger_multipliers.get(&finger) {
+            Some(m) => *m,
+            _ => 1.0,
+        });
+
+        Some(cost)
     }
 }

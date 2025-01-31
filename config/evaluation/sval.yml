@@ -53,8 +53,7 @@ metrics:
 
   # bigram metrics
 
-  # For specific intra-cluster motions (like center-south rolls), motions can
-  # feel much better than a typical finger repeat.
+  # I wanted more control than the usual finger_repeats metric, so...
   cluster_rolls:
     enabled: true
     weight: 780.0
@@ -73,60 +72,40 @@ metrics:
       #     etc.
       costs:
         Center:
-          South: -10.0
-          North: 1.0
-          In: 5.0
-          Out: 5.0
+          South: -1.0 # these feel *awesome*
+          North: 3.0
+          In: 2.0
+          Out: 2.0
         North:
-          South: 21.0
-          In: 11.0
-          Out: 19.0
-          Center: 5.0
+          South: 5.0
+          In: 3.0
+          Out: 3.0
+          Center: 4.0
         South:
-          North: 21.0
-          In: 19.0
-          Out: 21.0
-          Center: 9.0
+          North: 5.0
+          In: 4.0
+          Out: 4.0
+          Center: 3.0
         In:
-          Out: 28.0
-          North: 17.0
-          South: 17.0
-          Center: 11.0
+          Out: 7.0
+          North: 5.0
+          South: 4.0
+          Center: 4.0
         Out:
-          In: 28.0
-          North: 17.0
-          South: 17.0
-          Center: 11.0
+          In: 7.0
+          North: 5.0
+          South: 4.0
+          Center: 4.0
         Pad:
-          Up: -7.0
+          Up: -1.0 # also delicious
 
-  # If both keys corresponding to a bigram belong to the same finger, a cost is counted.
-  # The cost can be weighted by the individual keys and if they are performed by stretching
-  # or curling the finger. Also accounted for is whether there is lateral or in-line movement.
-  finger_repeats:
-    enabled: true
-    weight: 780.0
-    normalization:
-      type: weight_found
-      value: 1.0
-    params:
-      # Finger-individual weights to be multiplied with the cost
-      finger_factors:
-        Thumb: 1.2
-        Index: 0.8
+      # Per-finger multipliers for the above
+      finger_multipliers:
+        Pinky: 1.5
+        Ring: 2.0
         Middle: 1.0
-        Ring: 1.1
-        Pinky: 1.2
-      # Factor applied if the repeat consists of a movement
-      # in line of the finger "outwards", i.e. by stretching the finger
-      stretch_factor: 1.4
-      # Factor applied if the repeat consists of a movement
-      # in line of the finger "inwards", i.e. by curling the finger
-      curl_factor: 1.1
-      # Factor applied if the repeat consists of a lateral movement
-      lateral_factor: 2
-      # Cost to apply if the finger repeat happens on the same key
-      same_key_offset: 0.25
+        Index: 0.8
+        Thumb: 1.0
 
   # Depending on which fingers of the same hand are used to hit the keys of a bigram,
   # how many rows were crossed and in which direction the movement occurs, costs are

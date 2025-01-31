@@ -190,6 +190,7 @@ impl LayoutGenerator for NeoLayoutGenerator {
             AHashSet::from_iter(self.permutable_key_map.keys().cloned());
 
         // Check for duplicate chars
+        /* XXX
         if char_set.len() != chars.len() {
             let mut duplicates = AHashSet::default();
             let mut seen_chars = AHashSet::default();
@@ -206,6 +207,7 @@ impl LayoutGenerator for NeoLayoutGenerator {
             )
             .into());
         }
+        */
 
         let mut unsupported_chars: Vec<char> = char_set.difference(&layout_set).cloned().collect();
         let mut missing_chars: Vec<char> = layout_set.difference(&char_set).cloned().collect();

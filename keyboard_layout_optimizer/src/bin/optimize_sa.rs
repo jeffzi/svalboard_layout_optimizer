@@ -19,7 +19,7 @@ struct Options {
     fix: Option<String>,
 
     /// Fix the keys from this layout (will be overwritten by --start-layout)
-    #[clap(long, default_value = "xvlcwkhgfqßuiaeosnrtdyüöäpzbm,.j")]
+    #[clap(long, default_value = "")]
     fix_from: String,
 
     /// Filename of optimization configuration file
