@@ -29,6 +29,7 @@ pub enum LayoutError {
 /// Corresponds to (parts of) a YAML configuration file.
 #[derive(Deserialize, Debug)]
 pub struct BaseLayoutYAML {
+    pub placeholder: String,
     pub keys: Vec<Vec<Vec<String>>>,
     pub fixed_keys: Vec<Vec<bool>>,
     pub fixed_layers: Vec<u8>,
@@ -55,6 +56,7 @@ impl BaseLayoutYAML {
 /// of their base layer.
 #[derive(Clone, Debug)]
 pub struct NeoLayoutGenerator {
+    placeholder: String,
     base_layout_symbols: Vec<Vec<char>>,
     fixed_keys: Vec<bool>,
     permutable_key_map: AHashMap<char, u8>,
@@ -66,6 +68,8 @@ pub struct NeoLayoutGenerator {
 impl NeoLayoutGenerator {
     /// Generate a [`NeoLayoutGenerator`] from a [`BaseLayoutYAML`] object
     pub fn from_object(base: BaseLayoutYAML, keyboard: Arc<Keyboard>) -> Self {
+        let placeholder = base.placeholder;
+
         let base_layout_symbols: Vec<Vec<char>> = base
             .keys
             .iter()
@@ -87,6 +91,7 @@ impl NeoLayoutGenerator {
             });
 
         NeoLayoutGenerator {
+            placeholder,
             base_layout_symbols,
             fixed_keys,
             permutable_key_map,
@@ -183,14 +188,15 @@ impl LayoutGenerator for NeoLayoutGenerator {
             return self.generate_base();
         }
 
-        let chars: Vec<char> = layout_keys.chars().collect();
+        let placeholder = self.placeholder.chars().nth(0).unwrap(); // XXX
+        let chars: Vec<char> = layout_keys.chars().filter(|c| *c != placeholder).collect();
 
-        let char_set: AHashSet<char> = AHashSet::from_iter(chars.clone());
+        let placeholder_set: AHashSet<char> = AHashSet::from_iter(self.placeholder.chars());
+        let char_set: AHashSet<char> = AHashSet::from_iter(chars.clone()).difference(&placeholder_set).cloned().collect();
         let layout_set: AHashSet<char> =
-            AHashSet::from_iter(self.permutable_key_map.keys().cloned());
+            AHashSet::from_iter(self.permutable_key_map.keys().cloned()).difference(&placeholder_set).cloned().collect();
 
         // Check for duplicate chars
-        /* XXX
         if char_set.len() != chars.len() {
             let mut duplicates = AHashSet::default();
             let mut seen_chars = AHashSet::default();
@@ -207,7 +213,6 @@ impl LayoutGenerator for NeoLayoutGenerator {
             )
             .into());
         }
-        */
 
         let mut unsupported_chars: Vec<char> = char_set.difference(&layout_set).cloned().collect();
         let mut missing_chars: Vec<char> = layout_set.difference(&char_set).cloned().collect();

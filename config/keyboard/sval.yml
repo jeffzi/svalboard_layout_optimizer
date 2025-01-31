@@ -274,6 +274,8 @@ keyboard:
 
 # re. this: i'll start with a bastard dvorak layout
 base_layout:
+  # set-subtracted from the duplicate/unsupported check
+  placeholder: "□"
   keys:
     # fingers
     - [
