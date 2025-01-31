@@ -63,7 +63,7 @@ metrics:
 
     params:
       # Default cost of a cluster roll. Perhaps best handled by finger_repeats.
-      default_cost: 0.0
+      default_cost: 0.5
 
       # Format:
       #   from:
