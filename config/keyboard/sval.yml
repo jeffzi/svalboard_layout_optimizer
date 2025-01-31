@@ -315,11 +315,11 @@ base_layout:
     # thumbs
     - [
       # left thumb
-      [" "], [ ""], [ ""],
-      [ ""], [ ""], [ ""],
+      [" "], ["□"], ["□"],
+      ["□"], ["□"], ["□"],
       # right thumb
-      [ ""], [ ""], [ ""],
-      [ ""], ["⇧"], [ ""],
+      ["□"], ["□"], ["□"],
+      ["□"], ["⇧"], ["□"],
     ]
 
   fixed_keys:
@@ -337,8 +337,12 @@ base_layout:
 
     # thumbs
     - [
-      true, true, true, true, true, true,
-      true, true, true, true, true, true,
+      # left thumb
+        true,  true,  true,
+        true,  true,  true,
+      # right thumb
+        true,  true, false,
+        true,  true,  true,
     ]
 
   # everything else is pretty standard, modifiers TODO
