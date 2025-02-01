@@ -11,12 +11,12 @@ metrics:
       intended_loads:
         [Left, Pinky]: 0.7
         [Left, Ring]: 0.6
-        [Left, Middle]: 1.0
-        [Left, Index]: 1.0
+        [Left, Middle]: 1.1
+        [Left, Index]: 1.1
         [Left, Thumb]: 1.0
         [Right, Thumb]: 1.0
-        [Right, Index]: 1.0
-        [Right, Middle]: 1.0
+        [Right, Index]: 1.1
+        [Right, Middle]: 1.1
         [Right, Ring]: 0.6
         [Right, Pinky]: 0.7
 
@@ -82,7 +82,7 @@ metrics:
           Out: 3.0
           South: 7.0
         South:
-          Center: 9.0
+          Center: 7.0
           In: 5.0
           North: 7.0
           Out: 5.0
@@ -124,11 +124,13 @@ metrics:
       # cost for a south-north or north-south scissor
       south_north_cost: 1.0
       # cost for an inward lateral squeezing motion
-      lateral_squeeze_cost: 5.0
+      lateral_squeeze_cost: 6.0
       # cost for a lateral splay
       lateral_splay_cost: 2.0
       # cost for two identical laterals in sequence
       lateral_series_cost: 2.0
+      # cost for an lateral-to-adjacent-center move
+      lateral_center_cost: 4.0
 
   # Depending on which fingers of the same hand are used to hit the keys of a bigram,
   # how many rows were crossed and in which direction the movement occurs, costs are

@@ -310,7 +310,7 @@ base_layout:
                   ["v", "V"],
       # left pinky
                   ["l", "L"],
-      ["□",  ""], ["s", "S"], ["□",  ""],
+      ["□",  ""], ["s", "S"], ["-",  ""],
                   ["z", "Z"],
     ]
 
@@ -318,10 +318,10 @@ base_layout:
     - [
       # left thumb
       [" "], ["□"], ["□"],
-      ["□"], ["□"], ["□"],
+      ["□"], ["⇧"], ["□"],
       # right thumb
       ["□"], ["□"], ["□"],
-      ["□"], ["⇧"], ["□"],
+      ["□"], ["□"], ["□"],
     ]
 
   fixed_keys:
@@ -365,7 +365,7 @@ base_layout:
     # shift / first alternate layer
     - Left:
         type: hold
-        value: [[14, 5]]
+        value: [[11, 5]]
       Right:
         type: hold
         value: []

@@ -19,6 +19,7 @@ pub struct Parameters {
     pub lateral_squeeze_cost: f64,
     pub lateral_splay_cost: f64,
     pub lateral_series_cost: f64,
+    pub lateral_center_cost: f64,
 }
 
 #[derive(Clone, Debug)]
@@ -27,6 +28,7 @@ pub struct Scissoring {
     lateral_squeeze_cost: f64,
     lateral_splay_cost: f64,
     lateral_series_cost: f64,
+    lateral_center_cost: f64,
 }
 
 impl Scissoring {
@@ -36,6 +38,7 @@ impl Scissoring {
             lateral_squeeze_cost: params.lateral_squeeze_cost,
             lateral_splay_cost: params.lateral_splay_cost,
             lateral_series_cost: params.lateral_series_cost,
+            lateral_center_cost: params.lateral_center_cost,
         }
     }
 }
@@ -73,6 +76,7 @@ impl BigramMetric for Scissoring {
         let base_cost = match (dir_from, dir_to) {
             (South, North) | (North, South) => self.south_north_cost,
             (In, In) | (Out, Out) => self.lateral_series_cost,
+            (In, Center) | (Out, Center) | (Center, In) | (Center, Out) => self.lateral_center_cost,
             (In, Out) | (Out, In) => {
                 let inward_motion: bool = finger_from.numeric_index() > finger_to.numeric_index();
 
