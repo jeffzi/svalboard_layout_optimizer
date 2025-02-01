@@ -63,7 +63,7 @@ metrics:
 
     params:
       # Default cost of a cluster roll. Perhaps best handled by finger_repeats.
-      default_cost: 0.5
+      default_cost: 1.0
 
       # Format:
       #   from:
@@ -72,30 +72,30 @@ metrics:
       #     etc.
       costs:
         Center:
-          In: 2.0
+          In: 1.0
           North: 3.0
-          Out: 2.0
+          Out: 1.0
           South: 0.0 # these feel *awesome*
         North:
-          Center: 5.0
+          Center: 4.0
           In: 3.0
           Out: 3.0
           South: 7.0
         South:
           Center: 7.0
-          In: 5.0
+          In: 4.5
           North: 7.0
-          Out: 5.0
+          Out: 4.5
         In:
           Center: 7.0
           North: 4.0
           Out: 9.0
-          South: 4.0
+          South: 3.0
         Out:
           Center: 7.0
           In: 9.0
           North: 5.0
-          South: 4.0
+          South: 3.0
         Pad:
           Up: 1.0 # also delicious
         Up:
