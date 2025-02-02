@@ -89,7 +89,7 @@ impl BigramMetric for Scissoring {
                     self.lateral_splay_cost
                 }
             }
-            _ => 0.0
+            _ => 0.0,
         };
 
         Some(base_cost * weight)

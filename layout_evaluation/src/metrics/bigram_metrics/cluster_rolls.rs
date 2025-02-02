@@ -17,6 +17,7 @@ use serde::Deserialize;
 #[derive(Clone, Deserialize, Debug)]
 pub struct Parameters {
     pub default_cost: f64,
+    pub ignore_thumb: bool,
     pub costs: AHashMap<Direction, AHashMap<Direction, f64>>,
     pub finger_multipliers: AHashMap<Finger, f64>,
 }
@@ -24,6 +25,7 @@ pub struct Parameters {
 #[derive(Clone, Debug)]
 pub struct ClusterRolls {
     default_cost: f64,
+    ignore_thumb: bool,
     costs: AHashMap<Direction, AHashMap<Direction, f64>>,
     finger_multipliers: AHashMap<Finger, f64>,
 }
@@ -32,6 +34,7 @@ impl ClusterRolls {
     pub fn new(params: &Parameters) -> Self {
         Self {
             costs: params.costs.clone(),
+            ignore_thumb: params.ignore_thumb,
             default_cost: params.default_cost,
             finger_multipliers: params.finger_multipliers.clone(),
         }
@@ -55,6 +58,7 @@ impl BigramMetric for ClusterRolls {
         if (k1 == k2 && k1.is_modifier.is_some())
             || k1.key.hand != k2.key.hand
             || k1.key.finger != k2.key.finger
+            || (self.ignore_thumb && k1.key.finger == Finger::Thumb)
         {
             return Some(0.0);
         }

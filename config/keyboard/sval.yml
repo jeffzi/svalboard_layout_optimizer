@@ -272,7 +272,7 @@ keyboard:
   plot_template_short: |2
     {{0}}{{1}}{{2}}{{3}}{{4}}{{5}}{{6}}{{7}}{{8}}{{9}}{{10}}{{11}}{{12}}{{13}}{{14}}{{15}}{{16}}{{17}}{{18}}{{19}}{{20}}{{21}}{{22}}{{23}}{{24}}{{25}}{{26}}{{27}}{{28}}{{29}}{{30}}{{31}}{{32}}{{33}}{{34}}{{35}}{{36}}{{37}}{{38}}{{39}}{{40}}{{41}}{{42}}{{43}}{{44}}{{45}}{{46}}{{47}}{{48}}{{49}}{{50}}{{51}}
 
-# re. this: i'll start with a bastard dvorak layout
+# re. this: start with a few locked-in positions i like, then some punctuation
 base_layout:
   # set-subtracted during the duplicate/unsupported check
   placeholder: "□"
@@ -280,38 +280,38 @@ base_layout:
     # fingers
     - [
       # left pinky
-                  ["'", "\""],
-      ["□",  ""], ["a", "A"], ["□",  ""],
-                  [";", ":"],
+             ["'"],
+      ["□"], ["k"], ["□"],
+             [";"],
       # left ring
-                  [",", "?"],
-      ["□",  ""], ["o", "O"], ["x", "X"],
-                  ["q", "Q"],
+             [","],
+      ["□"], ["o"], ["x"],
+             ["q"],
       # left middle
-                  [".", "!"],
-      ["□",  ""], ["e", "E"], ["y", "Y"],
-                  ["j", "J"],
+             ["."],
+      ["□"], ["u"], ["y"],
+             ["j"],
       # left index
-                  ["p", "P"],
-      ["□",  ""], ["u", "U"], ["i", "I"],
-                  ["k", "K"],
+             ["p"],
+      ["□"], ["e"], ["i"],
+             ["a"],
 
-      # left index
-                  ["g", "G"],
-      ["d", "D"], ["h", "H"], ["□",  ""],
-                  ["m", "M"],
-      # left middle
-                  ["c", "C"],
-      ["f", "F"], ["t", "T"], ["□",  ""],
-                  ["w", "W"],
-      # left ring
-                  ["r", "R"],
-      ["b", "B"], ["n", "N"], ["□",  ""],
-                  ["v", "V"],
-      # left pinky
-                  ["l", "L"],
-      ["□",  ""], ["s", "S"], ["-",  ""],
-                  ["z", "Z"],
+      # right index
+             ["g"],
+      ["d"], ["t"], ["□"],
+             ["h"],
+      # right middle
+             ["c"],
+      ["f"], ["m"], ["□"],
+             ["w"],
+      # right ring
+             ["□"],
+      ["b"], ["n"], ["□"],
+             ["v"],
+      # right pinky
+             ["l"],
+      ["□"], ["s"], ["-"],
+             ["z"],
     ]
 
     # thumbs
@@ -320,21 +320,52 @@ base_layout:
       [" "], ["□"], ["□"],
       ["□"], ["⇧"], ["□"],
       # right thumb
-      ["□"], ["□"], ["□"],
+      ["□"], ["□"], ["r"],
       ["□"], ["□"], ["□"],
     ]
 
   fixed_keys:
     # fingers
     - [
-      false, false, false, false, false,
-      false, false, false, false, false,
-      false, false, false, false, false,
-      false, false, false, false, false,
-      false, false, false, false, false,
-      false, false, false, false, false,
-      false, false, false, false, false,
-      false, false, false, false, false,
+      # left pinky
+             false,
+      false, false, false,
+             false,
+
+      # left ring
+             false,
+      false, false, false,
+             false,
+
+      # left middle
+             false,
+      false, false, false,
+             false,
+
+      # left index
+             false,
+      false,  true, false,
+              true,
+
+      # right index
+             false,
+      false,  true, false,
+              true,
+
+      # right middle
+             false,
+      false, false, false,
+             false,
+
+      # right ring
+             false,
+      false, false, false,
+             false,
+
+      # right pinky
+             false,
+      false, false, false,
+             false,
     ]
 
     # thumbs
@@ -343,7 +374,7 @@ base_layout:
         true,  true,  true,
         true,  true,  true,
       # right thumb
-        true,  true, false,
+        true,  true,  true,
         true,  true,  true,
     ]
 
