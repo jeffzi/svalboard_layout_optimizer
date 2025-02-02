@@ -167,11 +167,11 @@ keyboard:
          2,
       # left ring
          5,
-      8, 2, 6,
+      8, 2, 7,
          2,
       # left middle
          4,
-      7, 2, 7,
+      7, 2, 6,
          2,
       # left index
          3,
@@ -184,11 +184,11 @@ keyboard:
          2,
       # right middle
          4,
-      7, 2, 7,
+      6, 2, 7,
          2,
       # right ring
          5,
-      6, 2, 8,
+      7, 2, 8,
          2,
       # right pinky
          5,
@@ -285,12 +285,12 @@ base_layout:
              [";"],
       # left ring
              [","],
-      ["□"], ["o"], ["x"],
+      ["□"], ["j"], ["x"],
              ["q"],
       # left middle
              ["."],
-      ["□"], ["u"], ["y"],
-             ["j"],
+      ["□"], ["o"], ["y"],
+             ["u"],
       # left index
              ["p"],
       ["□"], ["e"], ["i"],
@@ -298,15 +298,15 @@ base_layout:
 
       # right index
              ["g"],
-      ["d"], ["t"], ["□"],
+      ["w"], ["t"], ["□"],
              ["h"],
       # right middle
              ["c"],
-      ["f"], ["m"], ["□"],
-             ["w"],
+      ["f"], ["n"], ["□"],
+             ["d"],
       # right ring
              ["□"],
-      ["b"], ["n"], ["□"],
+      ["b"], ["m"], ["□"],
              ["v"],
       # right pinky
              ["l"],
@@ -339,8 +339,8 @@ base_layout:
 
       # left middle
              false,
-      false, false, false,
-             false,
+      false,  true, false,
+              true,
 
       # left index
              false,
@@ -354,8 +354,8 @@ base_layout:
 
       # right middle
              false,
-      false, false, false,
-             false,
+      false,  true, false,
+              true,
 
       # right ring
              false,

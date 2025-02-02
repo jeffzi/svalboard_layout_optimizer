@@ -2,7 +2,7 @@ metrics:
   # Each finger's load shall be relative to the specified weights
   finger_balance:
     enabled: true
-    weight: 0.0
+    weight: 30.0
     normalization:
       type: fixed
       value: 1.0
@@ -78,7 +78,7 @@ metrics:
           In: 1.0
           North: 3.0
           Out: 1.0
-          South: -1.0 # these feel *awesome*
+          South: -0.8 # these feel *awesome*
         North:
           Center: 3.5
           In: 2.5
@@ -106,7 +106,7 @@ metrics:
 
       # Per-finger multipliers for the above
       finger_multipliers:
-        Pinky: 1.2
+        Pinky: 1.3
         Ring: 1.2
         Middle: 1.0
         Index: 0.8
