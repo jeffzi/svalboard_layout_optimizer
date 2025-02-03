@@ -2,7 +2,7 @@ metrics:
   # Each finger's load shall be relative to the specified weights
   finger_balance:
     enabled: true
-    weight: 30.0
+    weight: 0.0
     normalization:
       type: fixed
       value: 1.0
@@ -63,7 +63,7 @@ metrics:
 
     params:
       # Default cost of a cluster roll. Perhaps best handled by finger_repeats.
-      default_cost: 1.5
+      default_cost: 0
 
       # Whether to actually count anything on the thumb
       ignore_thumb: true

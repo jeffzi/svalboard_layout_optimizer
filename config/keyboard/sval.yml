@@ -281,24 +281,24 @@ base_layout:
     - [
       # left pinky
              ["'"],
-      ["□"], ["k"], ["□"],
-             [";"],
+      ["□"], ["l"], ["□"],
+             ["y"],
       # left ring
              [","],
-      ["□"], ["j"], ["x"],
-             ["q"],
+      ["□"], ["w"], ["x"],
+             ["i"],
       # left middle
              ["."],
-      ["□"], ["o"], ["y"],
+      ["□"], ["o"], [";"],
              ["u"],
       # left index
              ["p"],
-      ["□"], ["e"], ["i"],
+      ["□"], ["e"], ["q"],
              ["a"],
 
       # right index
              ["g"],
-      ["w"], ["t"], ["□"],
+      ["j"], ["t"], ["□"],
              ["h"],
       # right middle
              ["c"],
@@ -309,7 +309,7 @@ base_layout:
       ["b"], ["m"], ["□"],
              ["v"],
       # right pinky
-             ["l"],
+             ["k"],
       ["□"], ["s"], ["-"],
              ["z"],
     ]
@@ -329,13 +329,13 @@ base_layout:
     - [
       # left pinky
              false,
-      false, false, false,
-             false,
+      false,  true, false,
+              true,
 
       # left ring
              false,
-      false, false, false,
-             false,
+      false,  true, false,
+              true,
 
       # left middle
              false,
