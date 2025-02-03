@@ -2,7 +2,7 @@ metrics:
   # Each finger's load shall be relative to the specified weights
   finger_balance:
     enabled: true
-    weight: 0.0
+    weight: 50.0
     normalization:
       type: fixed
       value: 1.0
@@ -78,14 +78,14 @@ metrics:
           In: 1.0
           North: 3.0
           Out: 1.0
-          South: -0.8 # these feel *awesome*
+          South: 0.0 # these feel *awesome*
         North:
           Center: 3.5
           In: 2.5
           Out: 3.0
           South: 7.0
         South:
-          Center: 7.0
+          Center: 6.0
           In: 4.5
           North: 7.0
           Out: 4.5
@@ -150,34 +150,20 @@ metrics:
       # cost: Cost to count for such a movement
       finger_switch_factor:
         - { from: [Left, Pinky], to: [Left, Ring], cost: 4 }
-        - { from: [Left, Pinky], to: [Left, Middle], cost: 3 }
+        - { from: [Left, Pinky], to: [Left, Middle], cost: 2.5 }
+        - { from: [Left, Pinky], to: [Left, Index], cost: 0.5 }
 
         - { from: [Left, Ring], to: [Left, Pinky], cost: 5 }
-        - { from: [Left, Ring], to: [Left, Middle], cost: 3 }
+        - { from: [Left, Ring], to: [Left, Middle], cost: 1.5 }
         - { from: [Left, Ring], to: [Left, Index], cost: 0.5 }
 
-        - { from: [Left, Middle], to: [Left, Pinky], cost: 4 }
-        - { from: [Left, Middle], to: [Left, Ring], cost: 3 }
-        - { from: [Left, Middle], to: [Left, Index], cost: 0.2 }
+        - { from: [Left, Middle], to: [Left, Pinky], cost: 5 }
+        - { from: [Left, Middle], to: [Left, Ring], cost: 2 }
+        - { from: [Left, Middle], to: [Left, Index], cost: 0.0 }
 
-        - { from: [Left, Index], to: [Left, Pinky], cost: 0.1 }
-        - { from: [Left, Index], to: [Left, Ring], cost: 0.3 }
-        - { from: [Left, Index], to: [Left, Middle], cost: 0.4 }
-
-        - { from: [Right, Pinky], to: [Right, Ring], cost: 4 }
-        - { from: [Right, Pinky], to: [Right, Middle], cost: 3 }
-
-        - { from: [Right, Ring], to: [Right, Pinky], cost: 5 }
-        - { from: [Right, Ring], to: [Right, Middle], cost: 3 }
-        - { from: [Right, Ring], to: [Right, Index], cost: 0.5 }
-
-        - { from: [Right, Middle], to: [Right, Pinky], cost: 4 }
-        - { from: [Right, Middle], to: [Right, Ring], cost: 3 }
-        - { from: [Right, Middle], to: [Right, Index], cost: 0.2 }
-
-        - { from: [Right, Index], to: [Right, Pinky], cost: 0.1 }
-        - { from: [Right, Index], to: [Right, Ring], cost: 0.3 }
-        - { from: [Right, Index], to: [Right, Middle], cost: 0.4 }
+        - { from: [Left, Index], to: [Left, Pinky], cost: 2.5 }
+        - { from: [Left, Index], to: [Left, Ring], cost: 2.5 }
+        - { from: [Left, Index], to: [Left, Middle], cost: 0.5 }
 
   # The `secondary_bigrams` metric evaluates all bigram metrics that can be computed on individual
   # bigrams (in particular not the finger- and hand-balance metrics) for the bigram resulting from
@@ -206,7 +192,7 @@ metrics:
   # depending on whether the three keys corresponding to the trigram are "in line" ("rolling
   # movement") or if there is a directional change.
   no_handswitch_in_trigram:
-    enabled: false
+    enabled: true
     weight: 400.0
     normalization:
       type: weight_found
