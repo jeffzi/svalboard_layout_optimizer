@@ -9,16 +9,16 @@ metrics:
     params:
       # Intended factors for finger load. Thumb values are ignored.
       intended_loads:
-        [Left, Pinky]: 0.7
-        [Left, Ring]: 0.6
-        [Left, Middle]: 1.1
-        [Left, Index]: 1.1
-        [Left, Thumb]: 1.0
-        [Right, Thumb]: 1.0
-        [Right, Index]: 1.1
-        [Right, Middle]: 1.1
-        [Right, Ring]: 0.6
-        [Right, Pinky]: 0.7
+        [Left, Pinky]: 1.2
+        [Left, Ring]: 1.4
+        [Left, Middle]: 2.0
+        [Left, Index]: 2.0
+        [Left, Thumb]: 2.0
+        [Right, Thumb]: 2.0
+        [Right, Index]: 2.0
+        [Right, Middle]: 2.0
+        [Right, Ring]: 1.4
+        [Right, Pinky]: 1.2
 
   # Each hand's load all be close to 50%
   hand_disbalance:
@@ -33,7 +33,7 @@ metrics:
   # Each keystroke incurs a cost (defined in the keyboard's layout config)
   key_costs:
     enabled: true
-    weight: 20.0
+    weight: 40.0
     normalization:
       type: weight_found
       value: 1.0
@@ -119,7 +119,7 @@ metrics:
   # should be optimized against.
   scissoring:
     enabled: true
-    weight: 500.0
+    weight: 1000.0
     normalization:
       type: weight_found
       value: 1.0
