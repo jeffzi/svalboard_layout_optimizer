@@ -1,0 +1,152 @@
+version: "3"
+
+vars:
+  CORPORA_DIR: corpora
+  NGRAMS_DIR: ../../ngrams
+  CORPUS_NAMES: [fra_news_2024_1M, fra-eu_web_2017_1M, fra_wikipedia_2021_1M]
+  NGRAM_DIRS: [fra_news, fra_web, fra_wikipedia]
+
+tasks:
+  default:
+    desc: Run the full English–French pipeline
+    deps: [all]
+
+  # Internal helpers
+  _download-corpus:
+    internal: true
+    desc: Download and extract a single Leipzig corpus
+    vars:
+      CORPUS_NAME: "{{.CORPUS_NAME}}"
+      CORPUS_URL: "{{.CORPUS_URL}}"
+      OUTPUT_FILE: "{{.OUTPUT_FILE}}"
+      EXTRACT_DIR: "{{.EXTRACT_DIR}}"
+    sources:
+      - "{{.CORPUS_URL}}"
+    generates:
+      - "{{.CORPORA_DIR}}/{{.OUTPUT_FILE}}"
+    cmds:
+      - mkdir -p {{.CORPORA_DIR}}
+      - test -f {{.CORPORA_DIR}}/{{.CORPUS_NAME}}.tar.gz || wget -O {{.CORPORA_DIR}}/{{.CORPUS_NAME}}.tar.gz {{.CORPUS_URL}}
+      - tar -xzf {{.CORPORA_DIR}}/{{.CORPUS_NAME}}.tar.gz -C {{.CORPORA_DIR}}
+      - find {{.CORPORA_DIR}}/{{.EXTRACT_DIR}} -name "*sentences.txt" -exec cp {} {{.CORPORA_DIR}}/{{.OUTPUT_FILE}} \;
+
+  _clean-corpus:
+    internal: true
+    desc: Clean a single corpus with normalization rules
+    vars:
+      INPUT_FILE: "{{.INPUT_FILE}}"
+      OUTPUT_FILE: "{{.OUTPUT_FILE}}"
+    sources:
+      - "{{.CORPORA_DIR}}/{{.INPUT_FILE}}"
+    generates:
+      - "{{.CORPORA_DIR}}/{{.OUTPUT_FILE}}"
+    cmds:
+      - python ../ngrams/clean_uni_leipzig_corpora.py {{.CORPORA_DIR}}/{{.INPUT_FILE}} {{.CORPORA_DIR}}/{{.OUTPUT_FILE}}
+
+  _generate-ngrams:
+    internal: true
+    desc: Generate ngrams for a single cleaned corpus
+    vars:
+      INPUT_FILE: "{{.INPUT_FILE}}"
+      OUTPUT_DIR: "{{.OUTPUT_DIR}}"
+    sources:
+      - "{{.CORPORA_DIR}}/{{.INPUT_FILE}}"
+    generates:
+      - "{{.NGRAMS_DIR}}/{{.OUTPUT_DIR}}/1-grams.txt"
+    cmds:
+      - mkdir -p {{.NGRAMS_DIR}}/{{.OUTPUT_DIR}}
+      - cd ../.. && cargo run --bin ngrams -- scripts/french/{{.CORPORA_DIR}}/{{.INPUT_FILE}} ngrams/{{.OUTPUT_DIR}}
+      - python ../ngrams/normalize.py {{.NGRAMS_DIR}}/{{.OUTPUT_DIR}}
+
+  # French pipeline
+  download-fra:
+    desc: Download French corpora
+    cmds:
+      - for: { var: CORPUS_NAMES }
+        task: _download-corpus
+        vars:
+          CORPUS_NAME: "{{.ITEM}}"
+          CORPUS_URL: "https://downloads.wortschatz-leipzig.de/corpora/{{.ITEM}}.tar.gz"
+          OUTPUT_FILE: "{{.ITEM}}-sentences.txt"
+          EXTRACT_DIR: "{{.ITEM}}"
+
+  clean-fra:
+    desc: Clean French corpora
+    deps: [download-fra]
+    method: checksum
+    cmds:
+      - for: { var: CORPUS_NAMES }
+        task: _clean-corpus
+        vars:
+          INPUT_FILE: "{{.ITEM}}-sentences.txt"
+          OUTPUT_FILE: "{{.ITEM}}-cleaned.txt"
+
+  generate-fra-ngrams:
+    desc: Generate French ngrams
+    deps: [clean-fra]
+    vars:
+      INDICES: '{{untilStep 0 (len .CORPUS_NAMES) 1 | join " "}}'
+    cmds:
+      - for:
+          var: INDICES
+          split: " "
+        task: _generate-ngrams
+        vars:
+          INPUT_FILE: "{{index .CORPUS_NAMES (atoi .ITEM)}}-cleaned.txt"
+          OUTPUT_DIR: "{{index .NGRAM_DIRS (atoi .ITEM)}}"
+
+  merge-fra:
+    desc: Merge French ngrams (web 50%, news 30%, wikipedia 20%)
+    deps: [generate-fra-ngrams]
+    sources:
+      - "{{.NGRAMS_DIR}}/fra_news/1-grams.txt"
+      - "{{.NGRAMS_DIR}}/fra_web/1-grams.txt"
+      - "{{.NGRAMS_DIR}}/fra_wikipedia/1-grams.txt"
+    generates:
+      - "{{.NGRAMS_DIR}}/fra_leipzig/1-grams.txt"
+    cmds:
+      - mkdir -p {{.NGRAMS_DIR}}/fra_leipzig
+      - cd ../.. && cargo run --bin ngram_merge -- ngrams/fra_leipzig ngrams/fra_web:50 ngrams/fra_news:30 ngrams/fra_wikipedia:20
+      - python ../ngrams/normalize.py {{.NGRAMS_DIR}}/fra_leipzig
+
+  # English Granite
+  download-eng:
+    desc: Ensure English Granite ngrams are available
+    method: checksum
+    sources:
+      - "Taskfile.yml"
+    generates:
+      - "{{.NGRAMS_DIR}}/eng_granite/1-grams.txt"
+    cmds:
+      - mkdir -p {{.NGRAMS_DIR}}/eng_granite
+      - git clone --depth 1 https://github.com/fohrloop/granite-english-ngrams.git /tmp/granite-english-ngrams
+      - cp -r /tmp/granite-english-ngrams/ngrams/english/* {{.NGRAMS_DIR}}/eng_granite/
+      - rm -rf /tmp/granite-english-ngrams
+
+  # Final merge
+  merge-eng-fra:
+    desc: Merge English Granite (70%) with French Leipzig (30%)
+    deps: [download-eng, merge-fra]
+    sources:
+      - "{{.NGRAMS_DIR}}/eng_granite/1-grams.txt"
+      - "{{.NGRAMS_DIR}}/fra_leipzig/1-grams.txt"
+    generates:
+      - "{{.NGRAMS_DIR}}/eng_fra/1-grams.txt"
+    cmds:
+      - mkdir -p {{.NGRAMS_DIR}}/eng_fra
+      - cd ../.. && cargo run --bin ngram_merge -- ngrams/eng_fra ngrams/eng_granite:70 ngrams/fra_leipzig:30
+      - python ../ngrams/normalize.py {{.NGRAMS_DIR}}/eng_fra
+
+  clean:
+    desc: Remove downloads and generated files
+    cmds:
+      - rm -rf {{.CORPORA_DIR}}
+      - for: { var: NGRAM_DIRS }
+        cmd: rm -rf {{.NGRAMS_DIR}}/{{.ITEM}}
+      - rm -rf {{.NGRAMS_DIR}}/fra_leipzig
+      - rm -rf {{.NGRAMS_DIR}}/eng_granite
+      - rm -rf {{.NGRAMS_DIR}}/eng_fra
+
+  all:
+    desc: Build combined English–French ngrams
+    deps: [merge-eng-fra]

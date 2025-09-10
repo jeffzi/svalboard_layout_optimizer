@@ -2,3 +2,6 @@
 /target
 Cargo.lock
 perf.data
+scripts/french/corpora
+scripts/french/.task
+*layouts.txt
