@@ -1,0 +1,114 @@
+version: "3"
+
+env:
+  SHOW_WORST: true
+  N_WORST: 10
+
+tasks:
+  # --- Atomic tasks (internal) -----------------------------------------------
+
+  _optimize_sa:
+    internal: true
+    desc: "Run simulated annealing and append solutions to the inferred solutions file"
+    vars:
+      NGRAMS: "{{.NGRAMS}}"
+      IN_LAYOUT_FILE: "{{.IN_LAYOUT_FILE}}"
+      OUT_LAYOUT_FILE: "{{.OUT_LAYOUT_FILE}}"
+      CLI_ARGS: "{{.CLI_ARGS}}"
+      IN_LAYOUTS:
+        sh: |
+          LAYOUTS=""
+          while IFS= read -r layout || [[ -n "$layout" ]]; do
+            if [[ -n "$layout" && "$layout" != *"□"* ]]; then
+              continue
+            fi
+            if [[ -n "$layout" ]]; then
+              LAYOUTS="$LAYOUTS --start-layouts \"$layout\""
+            fi
+          done < "{{.IN_LAYOUT_FILE}}"
+          echo "$LAYOUTS"
+    cmds:
+      - |
+        cargo run --bin optimize_sa -- \
+          --layout-config config/keyboard/sval.yml \
+          --ngrams ngrams/{{.NGRAMS}} \
+          {{.IN_LAYOUTS}} \
+          --append-solutions-to "{{.OUT_LAYOUT_FILE}}" \
+          {{.CLI_ARGS}}
+
+  _evaluate:
+    internal: true
+    desc: "Evaluate solutions into a CSV file"
+    vars:
+      NGRAMS: "{{.NGRAMS}}"
+      LAYOUT_FILE: "{{.LAYOUT_FILE}}"
+      TEMP_DIR: "temp"
+      JSON_OUT:
+        sh: basename "{{.LAYOUT_FILE}}" .txt | sed 's/^/temp\//' | sed 's/$/.json/'
+      TXT_OUT:
+        sh: basename "{{.LAYOUT_FILE}}" .txt | sed 's/^/temp\//' | sed 's/$/.txt/'
+      EVAL_OUT: "evaluation/{{.NGRAMS}}"
+    cmds:
+      - mkdir -p "{{.TEMP_DIR}}"
+      - |
+        cargo run --bin evaluate -- \
+          --layout-config config/keyboard/sval.yml \
+          --ngrams ngrams/{{.NGRAMS}} \
+          --from-file "{{.LAYOUT_FILE}}" \
+          --sort \
+          --json > "{{.JSON_OUT}}"
+      - rm -rf "{{.EVAL_OUT}}"
+      - |
+        cargo run --bin evaluate -- \
+          --layout-config config/keyboard/sval.yml \
+          --ngrams ngrams/{{.NGRAMS}} \
+          --from-file "{{.LAYOUT_FILE}}" \
+          --sort > "{{.TXT_OUT}}"
+      - uv run --project scripts scripts/parse_results.py "{{.JSON_OUT}}" --corpus "{{.NGRAMS}}" --out "{{.EVAL_OUT}}"
+      - defer: rm -rf "{{.TEMP_DIR}}"
+
+  # --- Public  ---------------------------------------------------------------
+
+  optimize:
+    desc: |
+      Optimize keyboard layouts then evaluate.
+      Usage:
+        task optimize CORPORA=eng_fra /
+        task optimize CORPORA=eng_fra IN_LAYOUT_FILE=layouts.txt -- --fix 'reoyaui'
+    vars:
+      CORPORA: "{{.CORPORA}}"
+      CLI_ARGS: "{{.CLI_ARGS}}"
+      IN_LAYOUT_FILE: '{{ .IN_LAYOUT_FILE | default (print .CORPORA "_layouts.txt") }}'
+      OUT_LAYOUT_FILE: '{{ .OUT_LAYOUT_FILE | default (print .CORPORA "_optimized_layouts.txt") }}'
+    preconditions:
+      - sh: test -f "{{.IN_LAYOUT_FILE}}"
+        msg: "Error: layouts file '{{.IN_LAYOUT_FILE}}' not found."
+    cmds:
+      - task: _optimize_sa
+        vars:
+          NGRAMS: "{{.CORPORA}}"
+          IN_LAYOUT_FILE: "{{.IN_LAYOUT_FILE}}"
+          OUT_LAYOUT_FILE: "{{.OUT_LAYOUT_FILE}}"
+          CLI_ARGS: "{{.CLI_ARGS}}"
+      - task: _evaluate
+        vars:
+          NGRAMS: "{{.CORPORA}}"
+          LAYOUT_FILE: "{{.OUT_LAYOUT_FILE}}"
+
+  evaluate:
+    desc: |
+      Evaluate an existing solutions file for the given corpus.
+      Usage:
+        task evaluate CORPORA=eng_fra /
+        task evaluate CORPORA=eng_fra LAYOUT_FILE=optimized_layouts.txt
+    vars:
+      CORPORA: "{{.CORPORA}}"
+      LAYOUT_FILE: '{{ .LAYOUT_FILE | default (print .CORPORA "_optimized_layouts.txt") }}'
+    preconditions:
+      - sh: test -f "{{.LAYOUT_FILE}}"
+        msg: "Error: solutions file '{{.LAYOUT_FILE}}' not found. Run 'task optimize CORPORA={{.CORPORA}}' first or provide LAYOUT_FILE explicitly."
+    cmds:
+      - task: _evaluate
+        vars:
+          NGRAMS: "{{.CORPORA}}"
+          LAYOUT_FILE: "{{.LAYOUT_FILE}}"
