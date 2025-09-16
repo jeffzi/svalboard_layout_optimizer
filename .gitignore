@@ -5,3 +5,4 @@ perf.data
 scripts/french/corpora
 scripts/french/.task
 *layouts.txt
+.python-version

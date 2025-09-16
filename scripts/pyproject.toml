@@ -1,0 +1,10 @@
+[project]
+name = "scripts"
+version = "0.1.0"
+description = "Parse evaluation results"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "rich>=14.1.0",
+    "typer>=0.17.4",
+]
