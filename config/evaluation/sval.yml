@@ -191,6 +191,45 @@ metrics:
         - { from: [Right, Index], to: [Right, Ring], cost: 2.5 }
         - { from: [Right, Index], to: [Right, Middle], cost: 0.5 }
 
+  # =============================================================================
+  # Trigram metrics
+  # =============================================================================
+
+  # The `irregularity` metric evaluates all bigram metrics that can be computed on individual
+  # bigrams (in particular not the finger- and hand-balance metrics) for the first and second half
+  # of each trigram. Their cost is multiplied and the square root of the resulting sum is taken.
+  irregularity:
+    enabled: true
+    weight: 8.25
+    normalization:
+      type: weight_found
+      value: 1.0
+    params:
+      null: null
+
+  # If there is no handswitch in a trigram, a cost is counted. The cost is multiplied by factors
+  # depending on whether the three keys corresponding to the trigram are "in line" ("rolling
+  # movement") or if there is a directional change.
+  no_handswitch_in_trigram:
+    enabled: true
+    weight: 400.0
+    normalization:
+      type: weight_found
+      value: 1.0
+    params:
+      # Count this factor if there is a direction change in the trigram
+      factor_with_direction_change: 2
+      # Count this factor if there is no direction change in the trigram
+      factor_without_direction_change: 1.0
+      # Count this factor if all characters of the trigram lie on the same key
+      factor_same_key: 0.0
+      # Count this factor if the trigram contains at least finger repeats
+      factor_contains_finger_repeat: 2
+      # Count this factor if the starting and end key are the same (but no finger repeat)
+      factor_same_key_start_end: 0.5
+      # The trigram contains the index finger at least once
+      factor_contains_index: 0.5
+
   # The `secondary_bigrams` metric evaluates all bigram metrics that can be computed on individual
   # bigrams (in particular not the finger- and hand-balance metrics) for the bigram resulting from
   # the first and last symbol of the trigram. Depending on whether the trigram involves a
@@ -213,29 +252,6 @@ metrics:
       # Mental pauses start with one of the defined `initial_pause_indicators` and then contain
       # some kind of whitespace.
       initial_pause_indicators: [",", ".", ";", ":"]
-
-  # If there is no handswitch in a trigram, a cost is counted. The cost is multiplied by factors
-  # depending on whether the three keys corresponding to the trigram are "in line" ("rolling
-  # movement") or if there is a directional change.
-  no_handswitch_in_trigram:
-    enabled: true
-    weight: 400.0
-    normalization:
-      type: weight_found
-      value: 1.0
-    params:
-      # Count this factor if there is a direction change in the trigram
-      factor_with_direction_change: 2.0
-      # Count this factor if there is no direction change in the trigram
-      factor_without_direction_change: 1.0
-      # Count this factor if all characters of the trigram lie on the same key
-      factor_same_key: 0.0
-      # Count this factor if the trigram contains at least finger repeats
-      factor_contains_finger_repeat: 2.0
-      # Count this factor if the starting and end key are the same (but no finger repeat)
-      factor_same_key_start_end: 0.5
-      # The trigram contains the index finger at least once
-      factor_contains_index: 0.5
 
 ngrams:
   # Increase the weight of bigrams that have both an absolute weight and relative weight exceed
