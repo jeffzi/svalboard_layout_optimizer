@@ -2,7 +2,7 @@ metrics:
   # Each finger's load shall be relative to the specified weights
   finger_balance:
     enabled: true
-    weight: 50.0
+    weight: 150.0
     normalization:
       type: fixed
       value: 1.0
@@ -33,7 +33,7 @@ metrics:
   # Each keystroke incurs a cost (defined in the keyboard's layout config)
   key_costs:
     enabled: true
-    weight: 40.0
+    weight: 50.0
     normalization:
       type: weight_found
       value: 1.0
@@ -51,12 +51,13 @@ metrics:
       one_shot_cost: 0.0
       long_press_cost: 1.0
 
-  # bigram metrics
-
+  # =============================================================================
+  # Bigram metrics
+  # =============================================================================
   # I wanted more control than the usual finger_repeats metric, so...
   cluster_rolls:
     enabled: true
-    weight: 780.0
+    weight: 1000.0
     normalization:
       type: weight_found
       value: 1.0
@@ -140,7 +141,7 @@ metrics:
   # counted.
   movement_pattern:
     enabled: true
-    weight: 70.0
+    weight: 25.0
     normalization:
       type: weight_found
       value: 1.0
