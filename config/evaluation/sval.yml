@@ -257,7 +257,7 @@ ngrams:
   # Increase the weight of bigrams that have both an absolute weight and relative weight exceed
   # specified thresholds.
   increase_common_ngrams:
-    enabled: false
+    enabled: true
     # Bigrams with a relative weight exceeding this threshold are considered
     critical_fraction: 0.001
     # The weight for bigrams exceeding both thresholds is multiplied by this factor
