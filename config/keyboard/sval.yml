@@ -162,12 +162,12 @@ keyboard:
   key_costs:
     - [
       # left pinky
-         8,
+         99,
       6, 3, 4,
          3,
       # left ring
-         6,
-      7, 2, 5,
+         7,
+      8, 2, 5,
          2,
       # left middle
          6,
@@ -187,11 +187,11 @@ keyboard:
       3, 2, 4,
          2,
       # right ring
-         6,
+         7,
       5, 2, 8,
          2,
       # right pinky
-         6,
+         99,
       4, 3, 6,
          3,
     ]
