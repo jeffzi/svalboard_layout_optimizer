@@ -149,21 +149,47 @@ metrics:
       # to: Finger for second symbol of the bigram
       # cost: Cost to count for such a movement
       finger_switch_factor:
+        # LEFT HAND
+        # Pinky transitions (highest penalties for moving from weak finger)
         - { from: [Left, Pinky], to: [Left, Ring], cost: 4 }
         - { from: [Left, Pinky], to: [Left, Middle], cost: 2.5 }
         - { from: [Left, Pinky], to: [Left, Index], cost: 0.5 }
 
+        # Ring transitions (emphasizing ring-pinky coupling)
         - { from: [Left, Ring], to: [Left, Pinky], cost: 5 }
         - { from: [Left, Ring], to: [Left, Middle], cost: 1.5 }
         - { from: [Left, Ring], to: [Left, Index], cost: 0.5 }
 
+        # Middle transitions (moderate cost except with pinky)
         - { from: [Left, Middle], to: [Left, Pinky], cost: 5 }
         - { from: [Left, Middle], to: [Left, Ring], cost: 2 }
-        - { from: [Left, Middle], to: [Left, Index], cost: 0.0 }
+        - { from: [Left, Middle], to: [Left, Index], cost: 0 }
 
+        # Index transitions (generally easiest, except to pinky)
         - { from: [Left, Index], to: [Left, Pinky], cost: 2.5 }
         - { from: [Left, Index], to: [Left, Ring], cost: 2.5 }
         - { from: [Left, Index], to: [Left, Middle], cost: 0.5 }
+
+        # RIGHT HAND (mirrored costs)
+        # Pinky transitions
+        - { from: [Right, Pinky], to: [Right, Ring], cost: 4 }
+        - { from: [Right, Pinky], to: [Right, Middle], cost: 2.5 }
+        - { from: [Right, Pinky], to: [Right, Index], cost: 0.5 }
+
+        # Ring transitions
+        - { from: [Right, Ring], to: [Right, Pinky], cost: 5 }
+        - { from: [Right, Ring], to: [Right, Middle], cost: 1.5 }
+        - { from: [Right, Ring], to: [Right, Index], cost: 0.5 }
+
+        # Middle transitions
+        - { from: [Right, Middle], to: [Right, Pinky], cost: 5 }
+        - { from: [Right, Middle], to: [Right, Ring], cost: 2 }
+        - { from: [Right, Middle], to: [Right, Index], cost: 0 }
+
+        # Index transitions
+        - { from: [Right, Index], to: [Right, Pinky], cost: 2.5 }
+        - { from: [Right, Index], to: [Right, Ring], cost: 2.5 }
+        - { from: [Right, Index], to: [Right, Middle], cost: 0.5 }
 
   # The `secondary_bigrams` metric evaluates all bigram metrics that can be computed on individual
   # bigrams (in particular not the finger- and hand-balance metrics) for the bigram resulting from
