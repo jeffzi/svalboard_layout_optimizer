@@ -42,13 +42,13 @@ Generate optimized layouts for a specific language corpus (must be in [ngrams/](
 
 ```bash
 # Optimize for English Granite corpus
-task optimize CORPORA=eng_granite
+task optimize CORPUS=eng_granite
 
 # Optimize with custom parameters (fix certain keys)
-task optimize CORPORA=eng_fra -- --fix 'reoyaui'
+task optimize CORPUS=eng_fra -- --fix 'reoyaui'
 
 # See optimization options
-task optimize CORPORA=eng_fra -- --help
+task optimize CORPUS=eng_fra -- --help
 ```
 
 ### Evaluate Existing Layouts
@@ -57,10 +57,10 @@ Evaluate a file of layouts that were previously optimized:
 
 ```bash
 # Evaluate previously optimized layouts
-task evaluate CORPORA=eng_fra
+task evaluate CORPUS=eng_fra
 
 # Evaluate a specific layout file
-task evaluate CORPORA=eng_fra LAYOUT_FILE=my_layouts.txt
+task evaluate CORPUS=eng_fra LAYOUT_FILE=my_layouts.txt
 ```
 
 ## Output

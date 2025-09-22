@@ -73,42 +73,42 @@ tasks:
     desc: |
       Optimize keyboard layouts then evaluate.
       Usage:
-        task optimize CORPORA=eng_fra /
-        task optimize CORPORA=eng_fra IN_LAYOUT_FILE=layouts.txt -- --fix 'reoyaui'
+        task optimize CORPUS=eng_fra /
+        task optimize CORPUS=eng_fra IN_LAYOUT_FILE=layouts.txt -- --fix 'reoyaui'
     vars:
-      CORPORA: "{{.CORPORA}}"
+      CORPUS: "{{.CORPUS}}"
       CLI_ARGS: "{{.CLI_ARGS}}"
-      IN_LAYOUT_FILE: '{{ .IN_LAYOUT_FILE | default (print .CORPORA "_layouts.txt") }}'
-      OUT_LAYOUT_FILE: '{{ .OUT_LAYOUT_FILE | default (print .CORPORA "_optimized_layouts.txt") }}'
+      IN_LAYOUT_FILE: '{{ .IN_LAYOUT_FILE | default (print .CORPUS "_layouts.txt") }}'
+      OUT_LAYOUT_FILE: '{{ .OUT_LAYOUT_FILE | default (print .CORPUS "_optimized_layouts.txt") }}'
     preconditions:
       - sh: test -f "{{.IN_LAYOUT_FILE}}"
         msg: "Error: layouts file '{{.IN_LAYOUT_FILE}}' not found."
     cmds:
       - task: _optimize_sa
         vars:
-          NGRAMS: "{{.CORPORA}}"
+          NGRAMS: "{{.CORPUS}}"
           IN_LAYOUT_FILE: "{{.IN_LAYOUT_FILE}}"
           OUT_LAYOUT_FILE: "{{.OUT_LAYOUT_FILE}}"
           CLI_ARGS: "{{.CLI_ARGS}}"
       - task: _evaluate
         vars:
-          NGRAMS: "{{.CORPORA}}"
+          NGRAMS: "{{.CORPUS}}"
           LAYOUT_FILE: "{{.OUT_LAYOUT_FILE}}"
 
   evaluate:
     desc: |
       Evaluate an existing solutions file for the given corpus.
       Usage:
-        task evaluate CORPORA=eng_fra /
-        task evaluate CORPORA=eng_fra LAYOUT_FILE=optimized_layouts.txt
+        task evaluate CORPUS=eng_fra /
+        task evaluate CORPUS=eng_fra LAYOUT_FILE=optimized_layouts.txt
     vars:
-      CORPORA: "{{.CORPORA}}"
-      LAYOUT_FILE: '{{ .LAYOUT_FILE | default (print .CORPORA "_optimized_layouts.txt") }}'
+      CORPUS: "{{.CORPUS}}"
+      LAYOUT_FILE: '{{ .LAYOUT_FILE | default (print .CORPUS "_optimized_layouts.txt") }}'
     preconditions:
       - sh: test -f "{{.LAYOUT_FILE}}"
-        msg: "Error: solutions file '{{.LAYOUT_FILE}}' not found. Run 'task optimize CORPORA={{.CORPORA}}' first or provide LAYOUT_FILE explicitly."
+        msg: "Error: solutions file '{{.LAYOUT_FILE}}' not found. Run 'task optimize CORPUS={{.CORPUS}}' first or provide LAYOUT_FILE explicitly."
     cmds:
       - task: _evaluate
         vars:
-          NGRAMS: "{{.CORPORA}}"
+          NGRAMS: "{{.CORPUS}}"
           LAYOUT_FILE: "{{.LAYOUT_FILE}}"
