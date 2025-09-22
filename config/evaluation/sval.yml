@@ -192,6 +192,24 @@ metrics:
         - { from: [Right, Index], to: [Right, Ring], cost: 2.5 }
         - { from: [Right, Index], to: [Right, Middle], cost: 0.5 }
 
+  manual_bigram_penalty:
+    enabled: true
+    weight: 1000.0
+    normalization:
+      type: weight_found
+      value: 1.0
+    params:
+      add_mirrored: true
+      # key positions as matrix positions and the corresponding costs
+      # [from_position, to_position]: weight
+      matrix_positions:
+        # Finger repeats on same key - pinky penalties
+        [[2, 1], [2, 1]]: 0.5 # left pinky north
+        [[1, 2], [1, 2]]: 0.5 # left pinky west
+        [[2, 2], [2, 2]]: 0.3 # left pinky center
+        [[3, 2], [3, 2]]: 0.5 # left pinky east
+        [[2, 3], [2, 3]]: 0.5 # left pinky south
+
   # =============================================================================
   # Trigram metrics
   # =============================================================================

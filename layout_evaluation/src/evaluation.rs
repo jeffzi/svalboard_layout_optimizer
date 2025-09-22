@@ -153,7 +153,7 @@ impl Evaluator {
         add_metric!(bigram_metric, cluster_rolls, ClusterRolls);
         add_metric!(bigram_metric, scissoring, Scissoring);
         add_metric!(bigram_metric, finger_repeats, FingerRepeats);
-        //add_metric!(bigram_metric, manual_bigram_penalty, ManualBigramPenalty);
+        add_metric!(bigram_metric, manual_bigram_penalty, ManualBigramPenalty);
         add_metric!(bigram_metric, movement_pattern, MovementPattern);
         //add_metric!(
         //    bigram_metric,
