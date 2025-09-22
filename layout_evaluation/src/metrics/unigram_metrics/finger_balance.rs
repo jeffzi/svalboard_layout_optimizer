@@ -18,11 +18,13 @@ use serde::Deserialize;
 #[derive(Clone, Deserialize, Debug)]
 pub struct Parameters {
     pub intended_loads: AHashMap<(Hand, Finger), f64>,
+    pub finger_factors: Option<AHashMap<Finger, f64>>,
 }
 
 #[derive(Clone, Debug)]
 pub struct FingerBalance {
     intended_loads: AHashMap<(Hand, Finger), f64>,
+    finger_factors: AHashMap<Finger, f64>,
 }
 
 impl FingerBalance {
@@ -37,7 +39,9 @@ impl FingerBalance {
         intended_loads.values_mut().for_each(|l| {
             *l /= total_intended;
         });
-        Self { intended_loads }
+        let finger_factors = params.finger_factors.clone().unwrap_or_default();
+
+        Self { intended_loads, finger_factors }
     }
 }
 
@@ -86,7 +90,12 @@ impl UnigramMetric for FingerBalance {
         let mean: f64 = fractions.iter().sum::<f64>() / fractions.len() as f64;
         let var = fractions
             .iter()
-            .map(|f| (f - mean) * (f - mean))
+            .zip(self.intended_loads.iter().filter(|((_hand, finger), _intended_load)| *finger != Finger::Thumb))
+            .map(|(fraction, ((_, finger), _))| {
+                let factor = self.finger_factors.get(finger).copied().unwrap_or(1.0);
+                let deviation = fraction - mean;
+                factor * deviation * deviation
+            })
             .sum::<f64>()
             / (fractions.len() - 1) as f64;
 
