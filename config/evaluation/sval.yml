@@ -1,5 +1,4 @@
 metrics:
-  # Each finger's load shall be relative to the specified weights
   finger_balance:
     enabled: true
     weight: 150.0
@@ -7,7 +6,7 @@ metrics:
       type: fixed
       value: 1.0
     params:
-      # Intended factors for finger load. Thumb values are ignored.
+      # Thumb values are ignored.
       intended_loads:
         [Left, Pinky]: 1
         [Left, Ring]: 1.3
@@ -19,8 +18,13 @@ metrics:
         [Right, Middle]: 1.9
         [Right, Ring]: 1.3
         [Right, Pinky]: 1
+      finger_factors:
+        Pinky: 1.5
+        Ring: 1.25
+        Middle: 1.0
+        Index: 0.75
+        Thumb: 1.0
 
-  # Each hand's load all be close to 50%
   hand_disbalance:
     enabled: true
     weight: 40.0
