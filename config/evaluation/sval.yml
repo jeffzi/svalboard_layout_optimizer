@@ -58,7 +58,7 @@ metrics:
   # =============================================================================
   # Bigram metrics
   # =============================================================================
-  # I wanted more control than the usual finger_repeats metric, so...
+
   cluster_rolls:
     enabled: true
     weight: 1000.0
@@ -67,10 +67,7 @@ metrics:
       value: 1.0
 
     params:
-      # Default cost of a cluster roll. Perhaps best handled by finger_repeats.
       default_cost: 0
-
-      # Whether to actually count anything on the thumb
       ignore_thumb: true
 
       # Format:
@@ -83,17 +80,17 @@ metrics:
           In: 1.0
           North: 3.0
           Out: 1.0
-          South: 0.0 # these feel *awesome*
+          South: 0.0
         North:
           Center: 3.5
           In: 2.5
           Out: 3.0
           South: 7.0
         South:
-          Center: 6.0
+          Center: 5.5
           In: 4.5
           North: 7.0
-          Out: 4.5
+          Out: 5.0
         In:
           Center: 6.0
           North: 3.5
@@ -105,16 +102,15 @@ metrics:
           North: 4.0
           South: 3.5
         Pad:
-          Up: 0.5 # also delicious
+          Up: 0.5
         Up:
           Pad: 3.0
 
-      # Per-finger multipliers for the above
       finger_multipliers:
-        Pinky: 1.4
-        Ring: 1.2
+        Pinky: 1.5
+        Ring: 1.25
         Middle: 1.0
-        Index: 0.8
+        Index: 0.75
         Thumb: 1.0
 
   # Scissoring, here, adds some nuance to movement_pattern: it accounts for the
