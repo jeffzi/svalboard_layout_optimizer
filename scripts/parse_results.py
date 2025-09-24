@@ -21,11 +21,14 @@ METRICS_ORDER = [
     ("Scissoring", "Scissoring", "number", 2),
     ("Key Costs", "Key Costs", "number", 2),
     ("Movement Pattern", "Movement Pattern", "number", 2),
+    ("Manual Bigram Penalty", "Manual Bigram Penalty", "number", 2),
     ("Cluster Rolls Worst", "Cluster Rolls", "worst_only", None),
     ("Scissoring Worst", "Scissoring", "worst_only", None),
     ("Movement Pattern Worst", "Movement Pattern", "worst_only", None),
+    ("Manual Bigram Penalty Worst", "Manual Bigram Penalty", "worst_only", None),
     ("Secondary Bigrams Worst", "Secondary Bigrams", "worst_only", None),
     ("Trigrams Worst", "No Handswitch in Trigram", "worst_only", None),
+    ("Roll Statistics", "Roll Statistics", "message_only", None),
 ]
 
 COLUMN_HEADERS = ["Layout"] + [display for display, *_ in METRICS_ORDER]
@@ -47,6 +50,8 @@ METRICS_DESCRIPTION = """## Metrics Description
 **symmetric_handswitches**: Rewards using symmetrical key positions when switching between hands, but only for center, south, and index/middle north keys
 
 **movement_pattern**: Assigns costs to finger transitions within the same hand. If the movement is center key to center key or south key to south key, there is no penalty
+
+**manual_bigram_penalty**: Applies specific penalties to manually defined key combinations that are hard to describe otherwise, such as same-key repeats on pinky fingers
 
 **secondary_bigrams**: Evaluates the comfort of the first and last keys in three-key sequences
 
@@ -122,7 +127,7 @@ def extract_worst_bigrams(message: str) -> list[tuple[str, float]]:
     if ";" in worst_section:
         worst_section = worst_section.split(";")[0]
 
-    pattern = r"(\w{2}) \(([0-9.]+)%\)"
+    pattern = r"(.{2}) \(([0-9.]+)%\)"
     matches = re.findall(pattern, worst_section)
     return [(bigram, float(percent)) for bigram, percent in matches]
 
@@ -207,7 +212,10 @@ def process_layout_metrics(
             core = metric_cost["core"]
             message = core["message"]
 
-            if core["name"] in ["Scissoring", "Cluster Rolls"] and bigram_frequencies:
+            if (
+                core["name"] in ["Scissoring", "Cluster Rolls", "Manual Bigram Penalty"]
+                and bigram_frequencies
+            ):
                 message = add_frequencies(message, bigram_frequencies)
                 message = format_frequencies(message)
 
@@ -395,6 +403,7 @@ def export_markdown(
             "Finger Balance",
             "Cluster Rolls",
             "Scissoring",
+            "Manual Bigram Penalty",
             "Layout",
         ]
         f.write("| " + " | ".join(summary_headers) + " |\n")
@@ -406,6 +415,7 @@ def export_markdown(
             "Finger Disbalance",
             "Cluster Rolls",
             "Scissoring",
+            "Manual Bigram Penalty",
         ]
 
         layout_to_svg = dict(generated_layouts) if generated_layouts else {}
