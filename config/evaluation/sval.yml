@@ -1,7 +1,7 @@
 metrics:
   finger_balance:
     enabled: true
-    weight: 150.0
+    weight: 100.0
     normalization:
       type: fixed
       value: 1.0
@@ -27,7 +27,7 @@ metrics:
 
   hand_disbalance:
     enabled: true
-    weight: 40.0
+    weight: 50.0
     normalization:
       type: fixed
       value: 1.0
