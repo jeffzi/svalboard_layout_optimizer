@@ -203,12 +203,19 @@ metrics:
       # key positions as matrix positions and the corresponding costs
       # [from_position, to_position]: weight
       matrix_positions:
-        # Finger repeats on same key - pinky penalties
+        # Finger repeats on same key
         [[2, 1], [2, 1]]: 0.5 # left pinky north
         [[1, 2], [1, 2]]: 0.5 # left pinky west
         [[2, 2], [2, 2]]: 0.3 # left pinky center
         [[3, 2], [3, 2]]: 0.5 # left pinky east
         [[2, 3], [2, 3]]: 0.5 # left pinky south
+        # Right pinky positions
+        [[23, 1], [23, 1]]: 0.5 # right pinky north
+        [[22, 2], [22, 2]]: 0.5 # right pinky west
+        [[23, 2], [23, 2]]: 0.3 # right pinky center (home)
+        [[24, 2], [24, 2]]: 0.5 # right pinky east
+        [[23, 3], [23, 3]]: 0.5 # right pinky south
+
 
   # =============================================================================
   # Trigram metrics
