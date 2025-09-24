@@ -57,6 +57,7 @@ pub struct MetricParameters {
     pub movement_pattern: Option<WeightedParams<movement_pattern::Parameters>>,
     pub no_handswitch_after_unbalancing_key:
         Option<WeightedParams<no_handswitch_after_unbalancing_key::Parameters>>,
+    pub roll_stats: Option<WeightedParams<roll_stats::Parameters>>,
 
     pub irregularity: Option<WeightedParams<irregularity::Parameters>>,
     pub no_handswitch_in_trigram: Option<WeightedParams<no_handswitch_in_trigram::Parameters>>,
@@ -145,6 +146,7 @@ impl Evaluator {
 
         // unigram metrics
         add_metric!(unigram_metric, finger_balance, FingerBalance);
+        add_metric!(unigram_metric, position_penalties, PositionPenalties);
         add_metric!(unigram_metric, hand_disbalance, HandDisbalance);
         //add_metric!(unigram_metric, row_loads, RowLoads);
         //add_metric!(unigram_metric, modifier_usage, ModifierUsage);
@@ -156,6 +158,7 @@ impl Evaluator {
         add_metric!(bigram_metric, finger_repeats, FingerRepeats);
         add_metric!(bigram_metric, manual_bigram_penalty, ManualBigramPenalty);
         add_metric!(bigram_metric, movement_pattern, MovementPattern);
+        add_metric!(bigram_metric, roll_stats, RollStats);
         //add_metric!(
         //    bigram_metric,
         //    no_handswitch_after_unbalancing_key,

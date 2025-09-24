@@ -530,6 +530,15 @@ metrics:
         [[24, 2], [24, 2]]: 0.5 # right pinky east
         [[23, 3], [23, 3]]: 0.5 # right pinky south
 
+  roll_stats:
+    enabled: true
+    weight: 0.0
+    normalization:
+      type: fixed
+      value: 1.0
+    params:
+      ignore_modifiers: true
+      ignore_thumbs: true
 
   # =============================================================================
   # Trigram metrics
