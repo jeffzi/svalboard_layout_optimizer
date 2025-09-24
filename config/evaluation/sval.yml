@@ -282,8 +282,11 @@ metrics:
 ngrams:
   # Increase the weight of bigrams that have both an absolute weight and relative weight exceed
   # specified thresholds.
+  # NOTE: Currently disabled because weight_found normalization causes costs to decrease when
+  # penalties are applied (opposite of intended behavior). The penalty system works but
+  # optimization gets wrong signals due to normalization interaction.
   increase_common_ngrams:
-    enabled: true
+    enabled: false
     # Bigrams with a relative weight exceeding this threshold are considered
     critical_fraction: 0.001
     # The weight for bigrams exceeding both thresholds is multiplied by this factor
