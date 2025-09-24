@@ -55,6 +55,320 @@ metrics:
       one_shot_cost: 0.0
       long_press_cost: 1.0
 
+  # Penalize double letters on difficult positions - lower costs for accessible positions
+  position_penalties:
+    enabled: true
+    weight: 1000.0
+    normalization:
+      type: weight_found
+      value: 1.0
+    params:
+      penalty_positions:
+        # CATEGORY 1: High-frequency double letters (l,e,s,o,t,r,h) - strictest restrictions
+        # Only allowed on center and south positions of non-pinky fingers (ring, middle, index)
+
+        # CATEGORY 2: Lower-frequency double letters (p,f,m,n,c,d,g) - moderate restrictions
+        # Only allowed on center, south, and inward positions of all fingers (including pinky)
+
+        # === CATEGORY 1 LETTERS ===
+        l:
+          [2, 1]: 50.0 # left pinky north
+          [5, 1]: 50.0 # left ring north
+          [8, 1]: 50.0 # left middle north
+          [11, 1]: 50.0 # left index north
+          [14, 1]: 50.0 # right index north
+          [17, 1]: 50.0 # right middle north
+          [20, 1]: 50.0 # right ring north
+          [23, 1]: 50.0 # right pinky north
+          [1, 2]: 50.0 # left pinky outward
+          [3, 2]: 50.0 # left pinky inward
+          [4, 2]: 50.0 # left ring outward
+          [6, 2]: 50.0 # left ring inward
+          [7, 2]: 50.0 # left middle outward
+          [9, 2]: 50.0 # left middle inward
+          [10, 2]: 50.0 # left index outward
+          [12, 2]: 50.0 # left index inward
+          [13, 2]: 50.0 # right index inward
+          [15, 2]: 50.0 # right index outward
+          [16, 2]: 50.0 # right middle inward
+          [18, 2]: 50.0 # right middle outward
+          [19, 2]: 50.0 # right ring inward
+          [21, 2]: 50.0 # right ring outward
+          [22, 2]: 50.0 # right pinky inward
+          [24, 2]: 50.0 # right pinky outward
+          [2, 2]: 50.0 # left pinky center
+          [2, 3]: 50.0 # left pinky south
+          [23, 2]: 50.0 # right pinky center
+          [23, 3]: 50.0 # right pinky south
+        e:
+          [2, 1]: 50.0 # left pinky north
+          [5, 1]: 50.0 # left ring north
+          [8, 1]: 50.0 # left middle north
+          [11, 1]: 50.0 # left index north
+          [14, 1]: 50.0 # right index north
+          [17, 1]: 50.0 # right middle north
+          [20, 1]: 50.0 # right ring north
+          [23, 1]: 50.0 # right pinky north
+          [1, 2]: 50.0 # left pinky outward
+          [3, 2]: 50.0 # left pinky inward
+          [4, 2]: 50.0 # left ring outward
+          [6, 2]: 50.0 # left ring inward
+          [7, 2]: 50.0 # left middle outward
+          [9, 2]: 50.0 # left middle inward
+          [10, 2]: 50.0 # left index outward
+          [12, 2]: 50.0 # left index inward
+          [13, 2]: 50.0 # right index inward
+          [15, 2]: 50.0 # right index outward
+          [16, 2]: 50.0 # right middle inward
+          [18, 2]: 50.0 # right middle outward
+          [19, 2]: 50.0 # right ring inward
+          [21, 2]: 50.0 # right ring outward
+          [22, 2]: 50.0 # right pinky inward
+          [24, 2]: 50.0 # right pinky outward
+          [2, 2]: 50.0 # left pinky center
+          [2, 3]: 50.0 # left pinky south
+          [23, 2]: 50.0 # right pinky center
+          [23, 3]: 50.0 # right pinky south
+        s:
+          [2, 1]: 50.0 # left pinky north
+          [5, 1]: 50.0 # left ring north
+          [8, 1]: 50.0 # left middle north
+          [11, 1]: 50.0 # left index north
+          [14, 1]: 50.0 # right index north
+          [17, 1]: 50.0 # right middle north
+          [20, 1]: 50.0 # right ring north
+          [23, 1]: 50.0 # right pinky north
+          [1, 2]: 50.0 # left pinky outward
+          [3, 2]: 50.0 # left pinky inward
+          [4, 2]: 50.0 # left ring outward
+          [6, 2]: 50.0 # left ring inward
+          [7, 2]: 50.0 # left middle outward
+          [9, 2]: 50.0 # left middle inward
+          [10, 2]: 50.0 # left index outward
+          [12, 2]: 50.0 # left index inward
+          [13, 2]: 50.0 # right index inward
+          [15, 2]: 50.0 # right index outward
+          [16, 2]: 50.0 # right middle inward
+          [18, 2]: 50.0 # right middle outward
+          [19, 2]: 50.0 # right ring inward
+          [21, 2]: 50.0 # right ring outward
+          [22, 2]: 50.0 # right pinky inward
+          [24, 2]: 50.0 # right pinky outward
+          [2, 2]: 50.0 # left pinky center
+          [2, 3]: 50.0 # left pinky south
+          [23, 2]: 50.0 # right pinky center
+          [23, 3]: 50.0 # right pinky south
+        o:
+          [2, 1]: 50.0 # left pinky north
+          [5, 1]: 50.0 # left ring north
+          [8, 1]: 50.0 # left middle north
+          [11, 1]: 50.0 # left index north
+          [14, 1]: 50.0 # right index north
+          [17, 1]: 50.0 # right middle north
+          [20, 1]: 50.0 # right ring north
+          [23, 1]: 50.0 # right pinky north
+          [1, 2]: 50.0 # left pinky outward
+          [3, 2]: 50.0 # left pinky inward
+          [4, 2]: 50.0 # left ring outward
+          [6, 2]: 50.0 # left ring inward
+          [7, 2]: 50.0 # left middle outward
+          [9, 2]: 50.0 # left middle inward
+          [10, 2]: 50.0 # left index outward
+          [12, 2]: 50.0 # left index inward
+          [13, 2]: 50.0 # right index inward
+          [15, 2]: 50.0 # right index outward
+          [16, 2]: 50.0 # right middle inward
+          [18, 2]: 50.0 # right middle outward
+          [19, 2]: 50.0 # right ring inward
+          [21, 2]: 50.0 # right ring outward
+          [22, 2]: 50.0 # right pinky inward
+          [24, 2]: 50.0 # right pinky outward
+          [2, 2]: 50.0 # left pinky center
+          [2, 3]: 50.0 # left pinky south
+          [23, 2]: 50.0 # right pinky center
+          [23, 3]: 50.0 # right pinky south
+        t:
+          [2, 1]: 50.0 # left pinky north
+          [5, 1]: 50.0 # left ring north
+          [8, 1]: 50.0 # left middle north
+          [11, 1]: 50.0 # left index north
+          [14, 1]: 50.0 # right index north
+          [17, 1]: 50.0 # right middle north
+          [20, 1]: 50.0 # right ring north
+          [23, 1]: 50.0 # right pinky north
+          [1, 2]: 50.0 # left pinky outward
+          [3, 2]: 50.0 # left pinky inward
+          [4, 2]: 50.0 # left ring outward
+          [6, 2]: 50.0 # left ring inward
+          [7, 2]: 50.0 # left middle outward
+          [9, 2]: 50.0 # left middle inward
+          [10, 2]: 50.0 # left index outward
+          [12, 2]: 50.0 # left index inward
+          [13, 2]: 50.0 # right index inward
+          [15, 2]: 50.0 # right index outward
+          [16, 2]: 50.0 # right middle inward
+          [18, 2]: 50.0 # right middle outward
+          [19, 2]: 50.0 # right ring inward
+          [21, 2]: 50.0 # right ring outward
+          [22, 2]: 50.0 # right pinky inward
+          [24, 2]: 50.0 # right pinky outward
+          [2, 2]: 50.0 # left pinky center
+          [2, 3]: 50.0 # left pinky south
+          [23, 2]: 50.0 # right pinky center
+          [23, 3]: 50.0 # right pinky south
+        r:
+          [2, 1]: 50.0 # left pinky north
+          [5, 1]: 50.0 # left ring north
+          [8, 1]: 50.0 # left middle north
+          [11, 1]: 50.0 # left index north
+          [14, 1]: 50.0 # right index north
+          [17, 1]: 50.0 # right middle north
+          [20, 1]: 50.0 # right ring north
+          [23, 1]: 50.0 # right pinky north
+          [1, 2]: 50.0 # left pinky outward
+          [3, 2]: 50.0 # left pinky inward
+          [4, 2]: 50.0 # left ring outward
+          [6, 2]: 50.0 # left ring inward
+          [7, 2]: 50.0 # left middle outward
+          [9, 2]: 50.0 # left middle inward
+          [10, 2]: 50.0 # left index outward
+          [12, 2]: 50.0 # left index inward
+          [13, 2]: 50.0 # right index inward
+          [15, 2]: 50.0 # right index outward
+          [16, 2]: 50.0 # right middle inward
+          [18, 2]: 50.0 # right middle outward
+          [19, 2]: 50.0 # right ring inward
+          [21, 2]: 50.0 # right ring outward
+          [22, 2]: 50.0 # right pinky inward
+          [24, 2]: 50.0 # right pinky outward
+          [2, 2]: 50.0 # left pinky center
+          [2, 3]: 50.0 # left pinky south
+          [23, 2]: 50.0 # right pinky center
+          [23, 3]: 50.0 # right pinky south
+        h:
+          [2, 1]: 50.0 # left pinky north
+          [5, 1]: 50.0 # left ring north
+          [8, 1]: 50.0 # left middle north
+          [11, 1]: 50.0 # left index north
+          [14, 1]: 50.0 # right index north
+          [17, 1]: 50.0 # right middle north
+          [20, 1]: 50.0 # right ring north
+          [23, 1]: 50.0 # right pinky north
+          [1, 2]: 50.0 # left pinky outward
+          [3, 2]: 50.0 # left pinky inward
+          [4, 2]: 50.0 # left ring outward
+          [6, 2]: 50.0 # left ring inward
+          [7, 2]: 50.0 # left middle outward
+          [9, 2]: 50.0 # left middle inward
+          [10, 2]: 50.0 # left index outward
+          [12, 2]: 50.0 # left index inward
+          [13, 2]: 50.0 # right index inward
+          [15, 2]: 50.0 # right index outward
+          [16, 2]: 50.0 # right middle inward
+          [18, 2]: 50.0 # right middle outward
+          [19, 2]: 50.0 # right ring inward
+          [21, 2]: 50.0 # right ring outward
+          [22, 2]: 50.0 # right pinky inward
+          [24, 2]: 50.0 # right pinky outward
+          [2, 2]: 50.0 # left pinky center
+          [2, 3]: 50.0 # left pinky south
+          [23, 2]: 50.0 # right pinky center
+          [23, 3]: 50.0 # right pinky south
+
+        # === CATEGORY 2 LETTERS ===
+        p:
+          [5, 1]: 5.0 # left ring north
+          [8, 1]: 5.0 # left middle north
+          [11, 1]: 5.0 # left index north
+          [14, 1]: 5.0 # right index north
+          [17, 1]: 5.0 # right middle north
+          [20, 1]: 5.0 # right ring north
+          [1, 2]: 5.0 # left pinky outward
+          [4, 2]: 5.0 # left ring outward
+          [13, 2]: 5.0 # right index inward
+          [19, 2]: 5.0 # right ring inward
+          [22, 2]: 5.0 # right pinky inward
+        f:
+          [5, 1]: 5.0 # left ring north
+          [8, 1]: 5.0 # left middle north
+          [11, 1]: 5.0 # left index north
+          [14, 1]: 5.0 # right index north
+          [17, 1]: 5.0 # right middle north
+          [20, 1]: 5.0 # right ring north
+          [1, 2]: 5.0 # left pinky outward
+          [4, 2]: 5.0 # left ring outward
+          [13, 2]: 5.0 # right index inward
+          [19, 2]: 5.0 # right ring inward
+          [22, 2]: 5.0 # right pinky inward
+        g:
+          [5, 1]: 5.0 # left ring north
+          [8, 1]: 5.0 # left middle north
+          [11, 1]: 5.0 # left index north
+          [14, 1]: 5.0 # right index north
+          [17, 1]: 5.0 # right middle north
+          [20, 1]: 5.0 # right ring north
+          [1, 2]: 5.0 # left pinky outward
+          [4, 2]: 5.0 # left ring outward
+          [13, 2]: 5.0 # right index inward
+          [19, 2]: 5.0 # right ring inward
+          [22, 2]: 5.0 # right pinky inward
+        m:
+          [2, 1]: 5.0 # left pinky north
+          [5, 1]: 5.0 # left ring north
+          [8, 1]: 5.0 # left middle north
+          [11, 1]: 5.0 # left index north
+          [14, 1]: 5.0 # right index north
+          [17, 1]: 5.0 # right middle north
+          [20, 1]: 5.0 # right ring north
+          [23, 1]: 5.0 # right pinky north
+          [1, 2]: 5.0 # left pinky outward
+          [4, 2]: 5.0 # left ring outward
+          [13, 2]: 5.0 # right index inward
+          [19, 2]: 5.0 # right ring inward
+          [22, 2]: 5.0 # right pinky inward
+        n:
+          [2, 1]: 5.0 # left pinky north
+          [5, 1]: 5.0 # left ring north
+          [8, 1]: 5.0 # left middle north
+          [11, 1]: 5.0 # left index north
+          [14, 1]: 5.0 # right index north
+          [17, 1]: 5.0 # right middle north
+          [20, 1]: 5.0 # right ring north
+          [23, 1]: 5.0 # right pinky north
+          [1, 2]: 5.0 # left pinky outward
+          [4, 2]: 5.0 # left ring outward
+          [13, 2]: 5.0 # right index inward
+          [19, 2]: 5.0 # right ring inward
+          [22, 2]: 5.0 # right pinky inward
+        c:
+          [2, 1]: 5.0 # left pinky north
+          [5, 1]: 5.0 # left ring north
+          [8, 1]: 5.0 # left middle north
+          [11, 1]: 5.0 # left index north
+          [14, 1]: 5.0 # right index north
+          [17, 1]: 5.0 # right middle north
+          [20, 1]: 5.0 # right ring north
+          [23, 1]: 5.0 # right pinky north
+          [1, 2]: 5.0 # left pinky outward
+          [4, 2]: 5.0 # left ring outward
+          [13, 2]: 5.0 # right index inward
+          [19, 2]: 5.0 # right ring inward
+          [22, 2]: 5.0 # right pinky inward
+        d:
+          [2, 1]: 5.0 # left pinky north
+          [5, 1]: 5.0 # left ring north
+          [8, 1]: 5.0 # left middle north
+          [11, 1]: 5.0 # left index north
+          [14, 1]: 5.0 # right index north
+          [17, 1]: 5.0 # right middle north
+          [20, 1]: 5.0 # right ring north
+          [23, 1]: 5.0 # right pinky north
+          [1, 2]: 5.0 # left pinky outward
+          [4, 2]: 5.0 # left ring outward
+          [13, 2]: 5.0 # right index inward
+          [19, 2]: 5.0 # right ring inward
+          [22, 2]: 5.0 # right pinky inward
+
   # =============================================================================
   # Bigram metrics
   # =============================================================================
