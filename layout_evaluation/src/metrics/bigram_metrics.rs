@@ -1,11 +1,12 @@
 //! The `metrics` module provides a trait for bigram metrics.
 use keyboard_layout::layout::{LayerKey, Layout};
 
-use super::format_utils::{format_percentages, visualize_whitespace};
+use super::format_utils::{format_percentages, should_show_ngram, visualize_whitespace};
 use ordered_float::OrderedFloat;
 use priority_queue::DoublePriorityQueue;
 use std::{env, fmt};
 
+pub mod bigram_rolls;
 pub mod bigram_stats;
 pub mod finger_repeats;
 pub mod fsb;
@@ -93,6 +94,10 @@ pub trait BigramMetric: Send + Sync + BigramMetricClone + fmt::Debug {
                     let (gram, weight) = bigrams[i];
                     let freq_pct = 100.0 * weight / total_weight;
                     let cost_pct = 100.0 * cost.into_inner() / total_cost;
+                    (i, gram, cost_pct, freq_pct)
+                })
+                .filter(|(_, _, cost_pct, freq_pct)| should_show_ngram(*cost_pct, Some(*freq_pct)))
+                .map(|(_, gram, cost_pct, freq_pct)| {
                     let percentages = format_percentages(cost_pct, freq_pct);
                     let bigram_str = format!("{}{}", gram.0, gram.1);
                     format!("{} {}", visualize_whitespace(&bigram_str), percentages)

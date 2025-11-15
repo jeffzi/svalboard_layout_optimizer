@@ -6,7 +6,7 @@
 //! - Apply optional finger-specific multipliers
 //! - Format output with consistent whitespace visualization and percentage display
 use super::BigramMetric;
-use crate::metrics::format_utils::{format_percentages, visualize_whitespace};
+use crate::metrics::format_utils::{format_percentages, should_show_ngram, visualize_whitespace};
 use ahash::AHashMap;
 use keyboard_layout::{
     key::Finger,
@@ -284,6 +284,12 @@ impl<C: ScissorCategory + 'static, T: ScissorCompute<C> + 'static> BigramMetric
                         let (gram, weight) = bigrams[i];
                         let freq_pct = 100.0 * weight / total_weight;
                         let cost_pct = 100.0 * cost.into_inner() / total_cost;
+                        (i, gram, cost_pct, freq_pct)
+                    })
+                    .filter(|(_, _, cost_pct, freq_pct)| {
+                        should_show_ngram(*cost_pct, Some(*freq_pct))
+                    })
+                    .map(|(_, gram, cost_pct, freq_pct)| {
                         let percentages = format_percentages(cost_pct, freq_pct);
                         let bigram_str = format!("{}{}", gram.0, gram.1);
                         format!("{} {}", visualize_whitespace(&bigram_str), percentages)

@@ -1,6 +1,7 @@
 //! The `metrics` module provides a trait for trigram metrics.
 use keyboard_layout::layout::{LayerKey, Layout};
 
+use super::format_utils::should_show_ngram;
 use ordered_float::OrderedFloat;
 use priority_queue::DoublePriorityQueue;
 use std::{env, fmt};
@@ -18,12 +19,12 @@ pub mod oxey_outward_rolls;
 pub mod oxey_redirects;
 mod redirect_base; // Private module - shared base for redirect metrics
 pub mod redirects;
-pub mod weak_redirect;
 pub mod secondary_bigrams;
 pub mod sfs;
 pub mod trigram_finger_repeats;
 pub mod trigram_rolls;
 pub mod trigram_stats;
+pub mod weak_redirect;
 
 /// TrigramMetric is a trait for metrics that iterates over weighted trigrams.
 pub trait TrigramMetric: Send + Sync + TrigramMetricClone + fmt::Debug {
@@ -106,14 +107,13 @@ pub trait TrigramMetric: Send + Sync + TrigramMetricClone + fmt::Debug {
                     .rev()
                     .filter(|(_, cost)| cost.into_inner() > 0.0)
                     .map(|(i, cost)| {
+                        let cost_pct = 100.0 * cost.into_inner() / total_cost;
+                        (i, cost_pct)
+                    })
+                    .filter(|(_, cost_pct)| should_show_ngram(*cost_pct, None))
+                    .map(|(i, cost_pct)| {
                         let (gram, _) = trigrams[i];
-                        format!(
-                            "{}{}{} ({:>5.2}%)",
-                            gram.0,
-                            gram.1,
-                            gram.2,
-                            100.0 * cost.into_inner() / total_cost,
-                        )
+                        format!("{}{}{} ({:>5.2}%)", gram.0, gram.1, gram.2, cost_pct,)
                     })
                     .collect();
 

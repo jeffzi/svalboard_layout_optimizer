@@ -3,11 +3,11 @@ use keyboard_layout::layout::{LayerKey, Layout};
 use ordered_float::OrderedFloat;
 use priority_queue::DoublePriorityQueue;
 
-use super::format_utils::{format_percentages, visualize_whitespace};
+use super::format_utils::{format_percentages, should_show_ngram, visualize_whitespace};
 use std::{env, fmt};
 
-pub mod finger_balance;
 pub mod character_constraints;
+pub mod finger_balance;
 pub mod hand_disbalance;
 pub mod key_costs;
 pub mod modifier_usage;
@@ -81,13 +81,13 @@ pub trait UnigramMetric: Send + Sync + UnigramMetricClone + fmt::Debug {
                     let (gram, weight) = unigrams[i];
                     let freq_pct = 100.0 * weight / total_weight;
                     let cost_pct = 100.0 * cost.into_inner() / total_cost;
+                    (i, gram, cost_pct, freq_pct)
+                })
+                .filter(|(_, _, cost_pct, freq_pct)| should_show_ngram(*cost_pct, Some(*freq_pct)))
+                .map(|(_, gram, cost_pct, freq_pct)| {
                     let percentages = format_percentages(cost_pct, freq_pct);
                     let gram_str = format!("{}", gram);
-                    format!(
-                        "{} {}",
-                        visualize_whitespace(&gram_str),
-                        percentages
-                    )
+                    format!("{} {}", visualize_whitespace(&gram_str), percentages)
                 })
                 .collect();
 
