@@ -157,9 +157,6 @@ metrics:
       lateral:
         cost: 1.0
         finger_factors: *default_finger_factors
-      # High-frequency scissor penalty
-      critical_bigram_fraction: 0.0003
-      critical_bigram_factor: 50.0
 
   # =============================================================================
   # Trigram metrics
@@ -222,23 +219,19 @@ metrics:
       matrix_positions:
         # Same-key repeats on north keys
         [[2, 1], [2, 1]]: 1 # left pinky north
-        [[5, 1], [5, 1]]: 1 # left ring north
-        [[8, 1], [8, 1]]: 1 # left middle north
-        [[11, 1], [11, 1]]: 1 # left index north
-        [[14, 1], [14, 1]]: 1 # right index north
-        [[17, 1], [17, 1]]: 1 # right middle north
-        [[20, 1], [20, 1]]: 1 # right ring north
-        [[23, 1], [23, 1]]: 1 # right pinky north
+        [[5, 1], [5, 1]]: 10 # left ring north
+        [[8, 1], [8, 1]]: 10 # left middle north
+        [[11, 1], [11, 1]]: 10 # left index north
+        [[14, 1], [14, 1]]: 10 # right index north
+        [[17, 1], [17, 1]]: 10 # right middle north
+        [[20, 1], [20, 1]]: 10 # right ring north
+        [[23, 1], [23, 1]]: 10 # right pinky north
 
-        # Same-key repeats on pinky lateral keys
-        [[1, 2], [1, 2]]: 1 # left pinky west
-        [[2, 2], [2, 2]]: 0.3 # left pinky center
-        [[3, 2], [3, 2]]: 1 # left pinky east
-        [[2, 3], [2, 3]]: 1 # left pinky south
-        [[22, 2], [22, 2]]: 1 # right pinky west
-        [[23, 2], [23, 2]]: 0.3 # right pinky center
-        [[24, 2], [24, 2]]: 1 # right pinky east
-        [[23, 3], [23, 3]]: 1 # right pinky south
+        # Same-key repeats on pinky
+        [[1, 2], [1, 2]]: 10 # left pinky west
+        [[3, 2], [3, 2]]: 10 # left pinky east
+        [[22, 2], [22, 2]]: 10 # right pinky west
+        [[24, 2], [24, 2]]: 10 # right pinky east
 
   character_constraints:
     enabled: true
@@ -534,9 +527,9 @@ metrics:
           [23, 1]: 10 # north
 
         # === PUNCTUATION MARKS ===
-        # Forbid punctuation marks on center keys and south non-pinky
         ",":
           # Left pinky
+          [2, 1]: 10 # north
           [2, 2]: 10 # center
           # Left ring
           [5, 2]: 10 # center
@@ -545,10 +538,7 @@ metrics:
           [8, 2]: 10 # center
           [8, 3]: 10 # south
           # Left index
-          [11, 1]: 10 # north
-          [10, 2]: 10 # east
           [11, 2]: 10 # center
-          [12, 2]: 10 # west
           [11, 3]: 10 # south
           # Right index
           [14, 2]: 10 # center
@@ -557,15 +547,38 @@ metrics:
           [17, 2]: 10 # center
           [17, 3]: 10 # south
           # Right ring
-          [20, 1]: 10 # north
-          [19, 2]: 10 # west
           [20, 2]: 10 # center
-          [21, 2]: 10 # east
+          [20, 3]: 10 # south
+          # Right pinky
+          [23, 1]: 10 # north
+          [23, 2]: 10 # center
+        ".":
+          # Left pinky
+          [2, 1]: 10 # north
+          [2, 2]: 10 # center
+          # Left ring
+          [5, 2]: 10 # center
+          [5, 3]: 10 # south
+          # Left middle
+          [8, 2]: 10 # center
+          [8, 3]: 10 # south
+          # Left index
+          [11, 2]: 10 # center
+          [11, 3]: 10 # south
+          # Right index
+          [14, 2]: 10 # center
+          [14, 3]: 10 # south
+          # Right middle
+          [17, 2]: 10 # center
+          [17, 3]: 10 # south
+          # Right ring
+          [20, 2]: 10 # center
           [20, 3]: 10 # south
           # Right pinky
           [23, 2]: 10 # center
         "'":
           # Left pinky
+          [2, 1]: 10 # north
           [2, 2]: 10 # center
           # Left ring
           [5, 2]: 10 # center
@@ -586,9 +599,11 @@ metrics:
           [20, 2]: 10 # center
           [20, 3]: 10 # south
           # Right pinky
+          [23, 1]: 10 # north
           [23, 2]: 10 # center
         "-":
           # Left pinky
+          [2, 1]: 10 # north
           [2, 2]: 10 # center
           # Left ring
           [5, 2]: 10 # center
@@ -609,9 +624,11 @@ metrics:
           [20, 2]: 10 # center
           [20, 3]: 10 # south
           # Right pinky
+          [23, 1]: 10 # north
           [23, 2]: 10 # center
         "?":
           # Left pinky
+          [2, 1]: 10 # north
           [2, 2]: 10 # center
           # Left ring
           [5, 2]: 10 # center
@@ -632,8 +649,8 @@ metrics:
           [20, 2]: 10 # center
           [20, 3]: 10 # south
           # Right pinky
+          [23, 1]: 10 # north
           [23, 2]: 10 # center
-
 ngrams:
   # Increase the weight of bigrams that have both an absolute weight and relative weight exceed
   # specified thresholds.
