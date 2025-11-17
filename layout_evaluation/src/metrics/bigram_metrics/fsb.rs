@@ -104,7 +104,12 @@ struct FsbCompute {
 }
 
 impl ScissorCompute<FsbCategory> for FsbCompute {
-    fn compute_cost(&self, k1: &LayerKey, k2: &LayerKey, _layout: &Layout) -> Option<(f64, FsbCategory)> {
+    fn compute_cost(
+        &self,
+        k1: &LayerKey,
+        k2: &LayerKey,
+        _layout: &Layout,
+    ) -> Option<(f64, FsbCategory)> {
         if !is_adjacent_fingers(k1, k2) {
             return None;
         }
@@ -114,9 +119,7 @@ impl ScissorCompute<FsbCategory> for FsbCompute {
 
         match (dir_from, dir_to) {
             // FSB: Full Scissor Vertical - North-South opposition
-            (South, North) | (North, South) => {
-                Some((self.vertical_cost, FsbCategory::Vertical))
-            }
+            (South, North) | (North, South) => Some((self.vertical_cost, FsbCategory::Vertical)),
 
             // FSB: Full Scissor Lateral - In-Out opposition (squeeze/splay)
             (In, Out) | (Out, In) => {
@@ -203,7 +206,8 @@ impl BigramMetric for Fsb {
         total_weight: f64,
         layout: &Layout,
     ) -> Option<f64> {
-        self.inner.individual_cost(k1, k2, weight, total_weight, layout)
+        self.inner
+            .individual_cost(k1, k2, weight, total_weight, layout)
     }
 
     fn total_cost(

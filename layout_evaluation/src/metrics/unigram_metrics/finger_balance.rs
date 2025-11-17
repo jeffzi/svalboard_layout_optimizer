@@ -41,7 +41,10 @@ impl FingerBalance {
         });
         let finger_factors = params.finger_factors.clone().unwrap_or_default();
 
-        Self { intended_loads, finger_factors }
+        Self {
+            intended_loads,
+            finger_factors,
+        }
     }
 }
 
@@ -90,7 +93,11 @@ impl UnigramMetric for FingerBalance {
         let mean: f64 = fractions.iter().sum::<f64>() / fractions.len() as f64;
         let var = fractions
             .iter()
-            .zip(self.intended_loads.iter().filter(|((_hand, finger), _intended_load)| *finger != Finger::Thumb))
+            .zip(
+                self.intended_loads
+                    .iter()
+                    .filter(|((_hand, finger), _intended_load)| *finger != Finger::Thumb),
+            )
             .map(|(fraction, ((_, finger), _))| {
                 let factor = self.finger_factors.get(finger).copied().unwrap_or(1.0);
                 let deviation = fraction - mean;

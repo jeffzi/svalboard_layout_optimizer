@@ -2,7 +2,10 @@
 //! A redirect is a one-handed trigram with a direction change (e.g., inward->outward or outward->inward)
 //! that involves the index finger or thumb.
 
-use super::{redirect_base::{NormalRedirectFilter, RedirectMetric}, TrigramMetric};
+use super::{
+    redirect_base::{NormalRedirectFilter, RedirectMetric},
+    TrigramMetric,
+};
 use keyboard_layout::layout::{LayerKey, Layout};
 use serde::Deserialize;
 
@@ -50,7 +53,8 @@ impl TrigramMetric for Redirects {
         total_weight: f64,
         layout: &Layout,
     ) -> Option<f64> {
-        self.inner.individual_cost(k1, k2, k3, weight, total_weight, layout)
+        self.inner
+            .individual_cost(k1, k2, k3, weight, total_weight, layout)
     }
 
     fn total_cost(

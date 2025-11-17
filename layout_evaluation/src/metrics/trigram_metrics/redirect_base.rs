@@ -59,8 +59,12 @@ pub fn classify_redirect(k1: &LayerKey, k2: &LayerKey, k3: &LayerKey) -> (bool, 
     }
 
     // Check if it's weak (no index finger or thumb)
-    let has_index_or_thumb = f1 == Finger::Index || f2 == Finger::Index || f3 == Finger::Index
-                          || f1 == Finger::Thumb || f2 == Finger::Thumb || f3 == Finger::Thumb;
+    let has_index_or_thumb = f1 == Finger::Index
+        || f2 == Finger::Index
+        || f3 == Finger::Index
+        || f1 == Finger::Thumb
+        || f2 == Finger::Thumb
+        || f3 == Finger::Thumb;
     let is_weak = !has_index_or_thumb;
 
     (true, is_weak)

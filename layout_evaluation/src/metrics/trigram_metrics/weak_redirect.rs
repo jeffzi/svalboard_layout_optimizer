@@ -2,7 +2,10 @@
 //! A weak redirect is a one-handed trigram with a direction change that does NOT involve
 //! the index finger or thumb, making it harder to execute.
 
-use super::{redirect_base::{RedirectMetric, WeakRedirectFilter}, TrigramMetric};
+use super::{
+    redirect_base::{RedirectMetric, WeakRedirectFilter},
+    TrigramMetric,
+};
 use keyboard_layout::layout::{LayerKey, Layout};
 use serde::Deserialize;
 
@@ -50,7 +53,8 @@ impl TrigramMetric for WeakRedirect {
         total_weight: f64,
         layout: &Layout,
     ) -> Option<f64> {
-        self.inner.individual_cost(k1, k2, k3, weight, total_weight, layout)
+        self.inner
+            .individual_cost(k1, k2, k3, weight, total_weight, layout)
     }
 
     fn total_cost(
