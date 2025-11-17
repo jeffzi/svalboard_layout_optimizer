@@ -187,13 +187,15 @@ def validate_corpus(corpus_name: str) -> str:
 
 
 def drop_low_freq_entries(
-    message: str, threshold: float = DEFAULT_FREQ_THRESHOLD
+    message: str | None, threshold: float = DEFAULT_FREQ_THRESHOLD
 ) -> str:
     """
     Remove entries whose frequency (right side of '|') is < threshold (%).
     Preserves tokens that include punctuation such as commas (e.g., 'l,', 'o,', 'a.').
     Drops empty sections.
     """
+    if message is None:
+        return ""
     out_sections = []
     for raw_sec in (s.strip() for s in message.split(";")):
         if not raw_sec:
@@ -220,8 +222,10 @@ def drop_low_freq_entries(
     return "; ".join(out_sections)
 
 
-def clean_message(message: str, metric_name: str = "") -> str:
+def clean_message(message: str | None, metric_name: str = "") -> str:
     """Clean message for data storage."""
+    if message is None:
+        return ""
     prefixes = ["Finger loads % (no thumb): ", "Hand loads % (no thumb): ", "Worst: "]
     for prefix in prefixes:
         message = message.removeprefix(prefix)
@@ -257,8 +261,10 @@ def clean_message(message: str, metric_name: str = "") -> str:
     return message.strip()
 
 
-def format_message_for_markdown(message: str, metric_name: str = "") -> str:
+def format_message_for_markdown(message: str | None, metric_name: str = "") -> str:
     """Add markdown formatting tags to message for display."""
+    if message is None:
+        return ""
     match metric_name:
         case "Bigram Statistics":
             for pattern in BIGRAM_STAT_PATTERNS:
@@ -396,9 +402,9 @@ def extract_homerow(layout: str) -> str:
 
 def build_layout_row(
     layout: str, total_cost: float, metrics_data: dict[str, dict]
-) -> dict:
+) -> dict[str, str | float | int]:
     """Build a dict for one row following COLUMN_HEADERS order."""
-    row = {}
+    row: dict[str, str | float | int] = {}
     row[COLUMN_HEADERS[0]] = layout  # "Layout"
     row[COLUMN_HEADERS[1]] = extract_homerow(layout)  # "Homerow"
 
@@ -493,7 +499,7 @@ def parse_diagrams(txt_file: Path, output_dir: Path) -> list[tuple[str, str]]:
         content = f.read()
 
     layout_sections = []
-    current_section = []
+    current_section: list[str] = []
 
     for line in content.split("\n"):
         if line.startswith("Layout (layer 1):") and current_section:
