@@ -83,7 +83,7 @@ tasks:
           --layout-config config/keyboard/sval.yml \
           --ngrams ngrams/{{.NGRAMS}} \
           --from-file "{{.FILTERED_LAYOUT_FILE}}" \
-          --sort | tee "{{.TXT_OUT}}"
+          --sort > "{{.TXT_OUT}}"
       - uv run --project scripts scripts/report/report.py "{{.JSON_OUT}}" --corpus "{{.NGRAMS}}" --out "{{.EVAL_OUT}}"
 
   # --- Public  ---------------------------------------------------------------

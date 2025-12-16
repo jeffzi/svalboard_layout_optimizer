@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 
 import csv
+import io
 import json
 import re
-from pathlib import Path
-from typing import Callable, TextIO
-from urllib.parse import quote
 import unicodedata
+from pathlib import Path
+from collections.abc import Callable
+from typing import TextIO
+from urllib.parse import quote
 
 import typer
 from rich.console import Console
+from rich.panel import Panel
 
 # =============================================================================
 # CONSTANTS
@@ -107,10 +110,8 @@ METRICS_DESCRIPTIONS = {
 
 def generate_metrics_description(filtered_headers: list[str]) -> str:
     """Generate metrics description section based on metrics actually present in the output."""
-    # Collect unique metrics that have descriptions
     metrics_to_describe = set()
     for header in filtered_headers:
-        # Map headers to their base metric names
         if header in METRICS_DESCRIPTIONS:
             metrics_to_describe.add(header)
         elif "Worst" in header:
@@ -230,7 +231,6 @@ def clean_message(message: str | None, metric_name: str = "") -> str:
     for prefix in prefixes:
         message = message.removeprefix(prefix)
 
-    # Format percentages and other numbers
     match metric_name:
         case "Hand Disbalance" | "Finger Balance":
             decimals = BALANCE_METRIC_DECIMALS
@@ -240,7 +240,6 @@ def clean_message(message: str | None, metric_name: str = "") -> str:
                 message,
             )
         case "Trigram Statistics":
-            # Remove unwanted sub-metrics
             decimals = DEFAULT_METRIC_DECIMALS
             message = re.sub(
                 r"(\d+\.\d+)%,",
@@ -273,11 +272,9 @@ def format_message_for_markdown(message: str | None, metric_name: str = "") -> s
             for pattern in TRIGRAM_STAT_PATTERNS:
                 message = message.replace(f"{pattern}:", f"<u>{pattern}</u>:")
         case "Scissors":
-            # Format extracted scissor statistics
             for pattern in SCISSOR_PATTERNS:
                 message = message.replace(f"{pattern}:", f"<u>{pattern}</u>:")
         case "2-Rolls":
-            # Format extracted roll statistics
             for pattern in ["Total", "In", "Out", "Center→South"]:
                 message = message.replace(f"{pattern}:", f"<u>{pattern}</u>:")
 
@@ -405,8 +402,8 @@ def build_layout_row(
 ) -> dict[str, str | float | int]:
     """Build a dict for one row following COLUMN_HEADERS order."""
     row: dict[str, str | float | int] = {}
-    row[COLUMN_HEADERS[0]] = layout  # "Layout"
-    row[COLUMN_HEADERS[1]] = extract_homerow(layout)  # "Homerow"
+    row[COLUMN_HEADERS[0]] = layout
+    row[COLUMN_HEADERS[1]] = extract_homerow(layout)
 
     for display_header, metric_name, format_type, decimals in METRICS_ORDER:
         match format_type:
@@ -468,26 +465,151 @@ def parse_layout_diagram(text: str) -> list[str]:
     return layout_lines
 
 
+def style_layout_line(line: str) -> str:
+    """Apply Rich markup styling to a layout line."""
+    styled_line = ""
+    for char in line:
+        match char:
+            case "□":
+                styled_line += f"[gray]{char}[/gray]"
+            case _ if char.isalpha():
+                styled_line += f"[yellow]{char}[/yellow]"
+            case _:
+                styled_line += char
+    return styled_line
+
+
 def export_svg(layout_lines: list[str], output_path: Path) -> None:
     """Create SVG representation of the keyboard layout using Rich."""
-    console = Console(record=True, width=64)
+    console = Console(record=True, width=64, file=io.StringIO())
 
     for line in layout_lines:
-        styled_line = ""
-        for char in line:
-            match char:
-                case "□":
-                    styled_line += f"[gray]{char}[/gray]"
-                case _ if char.isalpha():
-                    styled_line += f"[yellow]{char}[/yellow]"
-                case _:
-                    styled_line += char
-        console.print(styled_line)
+        console.print(style_layout_line(line))
 
     console.save_svg(output_path, title="", font_aspect_ratio=1)
 
 
-def parse_diagrams(txt_file: Path, output_dir: Path) -> list[tuple[str, str]]:
+BIGRAM_GROUP_NAMES = ["Finger", "Full Scissors", "Half Scissors"]
+TRIGRAM_GROUP_NAMES = ["Rolls", "Rolls", "Alternation", "Redirects", "Skipgrams"]
+
+
+def _style_metric_names(metrics: list[str], style: str = "bold") -> list[str]:
+    """Apply Rich markup styling to metric names (text before colon)."""
+    styled = []
+    for metric in metrics:
+        if ":" in metric:
+            name, value = metric.split(":", 1)
+            styled.append(f"[{style}]{name}[/{style}]:{value}")
+        else:
+            styled.append(metric)
+    return styled
+
+
+def format_stats_by_group(stats: str, max_width: int, indent: int = 2) -> list[str]:
+    """Format stats with each group on its own line, wrapping within groups."""
+    if not stats:
+        return []
+
+    groups = [g.strip() for g in stats.split(";") if g.strip()]
+    lines = []
+
+    for group in groups:
+        metrics = [m.strip() for m in group.split(",") if m.strip()]
+        styled_metrics = _style_metric_names(metrics, style="bold")
+        group_lines = wrap_metrics_line(styled_metrics, max_width, indent=indent)
+        lines.extend(group_lines)
+
+    return lines
+
+
+def strip_markup(text: str) -> str:
+    """Remove Rich markup tags from text for length calculation."""
+    return re.sub(r"\[/?[^\]]+\]", "", text)
+
+
+def wrap_metrics_line(
+    metrics: list[str],
+    max_width: int,
+    indent: int = 2,
+    continuation_indent: int = 4,
+) -> list[str]:
+    """Wrap metrics to fit within max_width, preserving metric boundaries."""
+    lines = []
+    current_line = " " * indent
+    current_line_plain = " " * indent
+    separator = "  "
+
+    for metric in metrics:
+        metric_plain = strip_markup(metric)
+        if not current_line.strip():
+            test_len = len(current_line_plain) + len(metric_plain)
+        else:
+            test_len = len(current_line_plain) + len(separator) + len(metric_plain)
+
+        if test_len <= max_width:
+            if current_line.strip():
+                current_line += separator + metric
+                current_line_plain += separator + metric_plain
+            else:
+                current_line += metric
+                current_line_plain += metric_plain
+        else:
+            if current_line.strip():
+                lines.append(current_line)
+            current_line = " " * continuation_indent + metric
+            current_line_plain = " " * continuation_indent + metric_plain
+
+    if current_line.strip():
+        lines.append(current_line)
+
+    return lines
+
+
+def print_layout_panel(
+    layout_lines: list[str],
+    rank: int,
+    layout_string: str,
+    bigram_stats: str,
+    trigram_stats: str,
+    svg_path: str,
+) -> None:
+    """Print the keyboard layout in a Rich panel with statistics."""
+    # Calculate width based on diagram and path only (metrics will wrap)
+    diagram_width = max(len(line) for line in layout_lines) if layout_lines else 68
+    path_width = len(f"[svg] {svg_path}")
+
+    content_width = max(diagram_width, path_width)
+    panel_width = content_width + 4
+
+    console = Console(width=panel_width + 2)
+
+    content_lines = [style_layout_line(line) for line in layout_lines]
+    content_lines.append("[dim]" + "─" * (content_width - 2) + "[/dim]")
+
+    if bigram_stats:
+        content_lines.append("[cyan]Bigram:[/cyan]")
+        content_lines.extend(format_stats_by_group(bigram_stats, content_width))
+
+    if trigram_stats:
+        content_lines.append("[cyan]Trigram:[/cyan]")
+        content_lines.extend(format_stats_by_group(trigram_stats, content_width))
+
+    content_lines.append("[dim]" + "─" * (content_width - 2) + "[/dim]")
+    content_lines.append(f"[dim]\\[svg] {svg_path}[/dim]")
+
+    content = "\n".join(content_lines)
+    panel = Panel(
+        content,
+        title=f"[bold]#{rank}[/bold] {layout_string}",
+        title_align="left",
+        width=panel_width,
+    )
+    console.print(panel)
+
+
+def parse_diagrams(
+    txt_file: Path, output_dir: Path, records: list[dict] | None = None
+) -> list[tuple[str, str]]:
     """Parse results.txt file and generate SVG files for each layout."""
     if not txt_file.exists():
         raise FileNotFoundError(f"Results file not found: {txt_file}")
@@ -511,7 +633,14 @@ def parse_diagrams(txt_file: Path, output_dir: Path) -> list[tuple[str, str]]:
     if current_section:
         layout_sections.append("\n".join(current_section))
 
+    # Build lookup from layout string to record for stats
+    layout_to_record = {}
+    if records:
+        for rec in records:
+            layout_to_record[rec["Layout"]] = rec
+
     generated_layouts = []
+    layout_rank = 0
 
     for section in layout_sections:
         if not (
@@ -529,7 +658,26 @@ def parse_diagrams(txt_file: Path, output_dir: Path) -> list[tuple[str, str]]:
 
         svg_path = output_path / f"{layout_string}.svg"
         export_svg(layout_lines, svg_path)
-        typer.echo(f"Generated: {svg_path}")
+
+        # Get statistics if available
+        layout_rank += 1
+        bigram_stats = ""
+        trigram_stats = ""
+        if layout_string in layout_to_record:
+            rec = layout_to_record[layout_string]
+            bigram_stats = rec.get("Bigram Statistics", "")
+            trigram_stats = rec.get("Trigram Statistics", "")
+
+        # Print layout in a panel
+        print_layout_panel(
+            layout_lines,
+            layout_rank,
+            layout_string,
+            bigram_stats,
+            trigram_stats,
+            str(svg_path),
+        )
+
         generated_layouts.append((layout_string, str(svg_path)))
 
     return generated_layouts
@@ -862,7 +1010,7 @@ def main(
 
         svg_dir = output_dir / "svgs"
         typer.echo(f"Generating SVG files in {svg_dir}...")
-        generated_layouts = parse_diagrams(txt_file, svg_dir)
+        generated_layouts = parse_diagrams(txt_file, svg_dir, records)
 
         markdown_file = output_dir / f"{output_base}.md"
         typer.echo(f"Generating markdown table: {markdown_file}")
