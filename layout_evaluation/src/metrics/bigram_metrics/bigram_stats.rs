@@ -2,6 +2,7 @@
 //! This is informational only and not used for optimization.
 
 use super::{
+    is_adjacent_fingers,
     scissor_base::{classify_scissor, ScissorType},
     BigramMetric,
 };
@@ -32,6 +33,18 @@ pub struct BigramStats {
     ignore_thumbs: bool,
     ignore_modifiers: bool,
     ignore_movements: Vec<(Direction, Direction)>,
+}
+
+/// Returns true if this direction pair is a full scissor (handled by FSB/HSB).
+#[inline]
+fn is_scissor_pair(dir1: Direction, dir2: Direction) -> bool {
+    matches!(
+        (dir1, dir2),
+        (Direction::North, Direction::South)
+            | (Direction::South, Direction::North)
+            | (Direction::In, Direction::Out)
+            | (Direction::Out, Direction::In)
+    )
 }
 
 /// Format a percentage with up to 2 meaningful decimal places (strips trailing zeros)
@@ -82,6 +95,7 @@ impl BigramMetric for BigramStats {
         let mut splay_weight = 0.0;
         let mut diagonal_weight = 0.0;
         let mut lateral_weight = 0.0;
+        let mut non_sympathetic_weight = 0.0;
 
         let total_weight = total_weight.unwrap_or_else(|| bigrams.iter().map(|(_, w)| w).sum());
 
@@ -113,6 +127,22 @@ impl BigramMetric for BigramStats {
                     ScissorType::Lateral => lateral_weight += weight,
                 }
             }
+
+            // Check for non-sympathetic movements (adjacent fingers)
+            if is_adjacent_fingers(k1, k2) {
+                let dir1 = k1.key.direction;
+                let dir2 = k2.key.direction;
+
+                // Non-sympathetic: different directions, neither is Center, not a scissor
+                let is_non_sympathetic = dir1 != dir2
+                    && dir1 != Direction::Center
+                    && dir2 != Direction::Center
+                    && !is_scissor_pair(dir1, dir2);
+
+                if is_non_sympathetic {
+                    non_sympathetic_weight += weight;
+                }
+            }
         }
 
         let sfb_percentage = crate::metrics::to_percentage(sfb_weight, total_weight);
@@ -122,17 +152,30 @@ impl BigramMetric for BigramStats {
         let splay_percentage = crate::metrics::to_percentage(splay_weight, total_weight);
         let diagonal_percentage = crate::metrics::to_percentage(diagonal_weight, total_weight);
         let lateral_percentage = crate::metrics::to_percentage(lateral_weight, total_weight);
+        let non_sympathetic_percentage =
+            crate::metrics::to_percentage(non_sympathetic_weight, total_weight);
 
         // Build message with category groups separated by semicolons
         let mut groups = Vec::new();
 
-        // SFB group
+        // SFB and Non-Sympathetic group
+        let mut sfb_group = Vec::new();
         if sfb_percentage > 0.0 {
-            groups.push(format!(
+            sfb_group.push(format!(
                 "{}: {}%",
                 "SFB".underline(),
                 format_percentage(sfb_percentage)
             ));
+        }
+        if non_sympathetic_percentage > 0.0 {
+            sfb_group.push(format!(
+                "{}: {}%",
+                "Non-Sympathetic".underline(),
+                format_percentage(non_sympathetic_percentage)
+            ));
+        }
+        if !sfb_group.is_empty() {
+            groups.push(sfb_group.join(", "));
         }
 
         // Full Scissors group (Vertical, Squeeze, Splay)

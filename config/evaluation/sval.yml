@@ -23,14 +23,14 @@ metrics:
       value: 1.0
     params:
       intended_loads:
-        [Left, Pinky]: 8.5
+        [Left, Pinky]: 7.5
         [Left, Ring]: 11.5
         [Left, Middle]: 14
         [Left, Index]: 16
         [Right, Index]: 16
         [Right, Middle]: 14
         [Right, Ring]: 11.5
-        [Right, Pinky]: 8.5
+        [Right, Pinky]: 7.5
       finger_factors: *default_finger_factors
 
   # Each keystroke incurs a cost (defined in the keyboard's layout config)
@@ -152,11 +152,40 @@ metrics:
       value: 1.0
     params:
       diagonal:
-        cost: 5.0
-        finger_factors: *default_finger_factors
-      lateral:
         cost: 1.0
         finger_factors: *default_finger_factors
+      lateral:
+        cost: 0.0
+        finger_factors: *default_finger_factors
+
+  sympathetic:
+    enabled: true
+    weight: 100.0
+    normalization:
+      type: weight_found
+      value: 1.0
+    params:
+      # Per-direction independence cost (research-based)
+      # Lower = more independent. Formula: dir1_cost × dir2_cost × pair_factor
+      # Multiplication means independent movements (low cost) reduce coupling
+      # - Center (home): 0.0 = neutral, no penalty with any direction
+      # - South (flexion): 0.2 = highest independence
+      # - North (extension): 1.0 = more coupling than flexion
+      # - In/Out (lateral): 1.0 = same coupling as extension
+      direction_costs:
+        Center: 0.0
+        South: 0.2
+        North: 1.0
+        In: 1.0
+        Out: 1.0
+
+      # Finger-pair coupling multipliers (symmetric - order doesn't matter)
+      # Research: Ring-Pinky 31-64%, Middle-Ring 37-52%, Index-Middle 21-28%
+      # Factors derived from coupling ratios normalized to Ring-Pinky
+      finger_pair_factors:
+        [Ring, Pinky]: 1.5 # 31-64% coupling
+        [Middle, Ring]: 1.4 # 37-52% coupling
+        [Index, Middle]: 0.5 # 21-28% coupling
 
   # =============================================================================
   # Trigram metrics
@@ -217,19 +246,15 @@ metrics:
       # key positions as matrix positions (from config/keyboard/sval.yml) and the corresponding costs
       # [from_position, to_position]: weight
       matrix_positions:
-        # Same-key repeats on north keys
-        [[2, 1], [2, 1]]: 1 # left pinky north
-        [[5, 1], [5, 1]]: 10 # left ring north
-        [[8, 1], [8, 1]]: 10 # left middle north
-        [[11, 1], [11, 1]]: 10 # left index north
-        [[14, 1], [14, 1]]: 10 # right index north
-        [[17, 1], [17, 1]]: 10 # right middle north
-        [[20, 1], [20, 1]]: 10 # right ring north
-        [[23, 1], [23, 1]]: 10 # right pinky north
-
         # Same-key repeats on pinky
+        [[2, 1], [2, 1]]: 1 # left pinky north
+        [[2, 2], [2, 2]]: 1 # left pinky center
+        [[2, 3], [2, 3]]: 1 # left pinky south
         [[1, 2], [1, 2]]: 10 # left pinky west
         [[3, 2], [3, 2]]: 10 # left pinky east
+        [[23, 1], [23, 1]]: 10 # right pinky north
+        [[23, 2], [23, 2]]: 1 # right pinky center
+        [[23, 3], [23, 3]]: 1 # right pinky south
         [[22, 2], [22, 2]]: 10 # right pinky west
         [[24, 2], [24, 2]]: 10 # right pinky east
 
@@ -459,14 +484,6 @@ metrics:
           [6, 2]: 1 # west
           [4, 2]: 1 # east
           [5, 1]: 10 # north
-          # Left middle
-          [8, 1]: 10 # north
-          # Left index
-          [11, 1]: 10 # north
-          # Right index
-          [14, 1]: 10 # north
-          # Right middle
-          [17, 1]: 10 # north
           # Right ring
           [19, 2]: 1 # west
           [21, 2]: 1 # east
@@ -484,14 +501,6 @@ metrics:
           [6, 2]: 1 # west
           [4, 2]: 1 # east
           [5, 1]: 10 # north
-          # Left middle
-          [8, 1]: 10 # north
-          # Left index
-          [11, 1]: 10 # north
-          # Right index
-          [14, 1]: 10 # north
-          # Right middle
-          [17, 1]: 10 # north
           # Right ring
           [19, 2]: 1 # west
           [21, 2]: 1 # east
@@ -509,14 +518,6 @@ metrics:
           [6, 2]: 1 # west
           [4, 2]: 1 # east
           [5, 1]: 10 # north
-          # Left middle
-          [8, 1]: 10 # north
-          # Left index
-          [11, 1]: 10 # north
-          # Right index
-          [14, 1]: 10 # north
-          # Right middle
-          [17, 1]: 10 # north
           # Right ring
           [19, 2]: 1 # west
           [21, 2]: 1 # east
