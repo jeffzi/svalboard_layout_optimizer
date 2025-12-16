@@ -364,13 +364,20 @@ def extract_trigram_sfs(message: str) -> str:
     return extract_statistic_value(message, "SFS")
 
 
-# Summary table configuration: (display_header, source_metric, extractor_function)
-# extractor_function is None for direct access, or a callable for extracted values
+def extract_balance(hands_msg: str, fingers_msg: str) -> str:
+    """Combine hand and finger balance into a single formatted string."""
+    parts = []
+    if hands_msg:
+        parts.append(f"Hands: {hands_msg}")
+    if fingers_msg:
+        parts.append(f"Fingers: {fingers_msg}")
+    return "; ".join(parts)
+
+
 SUMMARY_COLUMNS_CONFIG: list[tuple[str, str, Callable[[str], str] | None]] = [
     ("SVG", "SVG", None),
     ("Total Cost", "Total Cost", None),
-    ("Hands Disbalance", "Hands Disbalance", None),
-    ("Finger Disbalance", "Finger Disbalance", None),
+    ("Balance", "Balance", None),
     ("Alternation", "Trigram Statistics", extract_trigram_alt),
     ("SFB", "Bigram Statistics", extract_bigram_sfb),
     ("Scissors", "Bigram Statistics", extract_bigram_scissors),
@@ -569,6 +576,7 @@ def print_layout_panel(
     layout_lines: list[str],
     rank: int,
     layout_string: str,
+    balance_stats: str,
     bigram_stats: str,
     trigram_stats: str,
     svg_path: str,
@@ -585,6 +593,10 @@ def print_layout_panel(
 
     content_lines = [style_layout_line(line) for line in layout_lines]
     content_lines.append("[dim]" + "─" * (content_width - 2) + "[/dim]")
+
+    if balance_stats:
+        content_lines.append("[cyan]Balance:[/cyan]")
+        content_lines.extend(format_stats_by_group(balance_stats, content_width))
 
     if bigram_stats:
         content_lines.append("[cyan]Bigram:[/cyan]")
@@ -659,20 +671,23 @@ def parse_diagrams(
         svg_path = output_path / f"{layout_string}.svg"
         export_svg(layout_lines, svg_path)
 
-        # Get statistics if available
         layout_rank += 1
+        balance_stats = ""
         bigram_stats = ""
         trigram_stats = ""
         if layout_string in layout_to_record:
             rec = layout_to_record[layout_string]
+            hands_msg = rec.get("Hands Disbalance", "")
+            fingers_msg = rec.get("Finger Disbalance", "")
+            balance_stats = extract_balance(hands_msg, fingers_msg)
             bigram_stats = rec.get("Bigram Statistics", "")
             trigram_stats = rec.get("Trigram Statistics", "")
 
-        # Print layout in a panel
         print_layout_panel(
             layout_lines,
             layout_rank,
             layout_string,
+            balance_stats,
             bigram_stats,
             trigram_stats,
             str(svg_path),
@@ -778,10 +793,14 @@ def _get_summary_headers(filtered_headers: list[str]) -> list[str]:
     summary_headers: list[str] = []
 
     for display_header, source_metric, _ in SUMMARY_COLUMNS_CONFIG:
-        # Always include SVG and Layout columns
         if display_header in ["SVG", "Layout"]:
             summary_headers.append(display_header)
-        # Include other columns if their source metric exists in data
+        elif display_header == "Balance":
+            if (
+                "Hands Disbalance" in filtered_headers
+                or "Finger Disbalance" in filtered_headers
+            ):
+                summary_headers.append(display_header)
         elif source_metric in filtered_headers:
             summary_headers.append(display_header)
 
@@ -816,6 +835,11 @@ def _build_summary_row_cells(
             case "Layout":
                 layout_link = f"[{layout}](#{layout_id[layout]})"
                 row_cells.append(_md_cell(layout_link))
+            case "Balance":
+                hands_msg = rec.get("Hands Disbalance", "")
+                fingers_msg = rec.get("Finger Disbalance", "")
+                value = extract_balance(hands_msg, fingers_msg)
+                row_cells.append(_md_cell(value))
             case _:
                 # Use configuration to determine how to extract the value
                 source_metric, extractor_fn = config_map.get(header, (None, None))
