@@ -160,32 +160,41 @@ metrics:
 
   sympathetic:
     enabled: true
-    weight: 100.0
+    weight: 150.0
     normalization:
       type: weight_found
       value: 1.0
     params:
-      # Per-direction independence cost (research-based)
-      # Lower = more independent. Formula: dir1_cost × dir2_cost × pair_factor
-      # Multiplication means independent movements (low cost) reduce coupling
+      # Per-direction cost (research-based)
+      # Formula: max(dir1_cost, dir2_cost) × pair_factor
+      # Worst direction dominates - "easy" direction doesn't reduce conflict
       # - Center (home): 0.0 = neutral, no penalty with any direction
-      # - South (flexion): 0.2 = highest independence
-      # - North (extension): 1.0 = more coupling than flexion
-      # - In/Out (lateral): 1.0 = same coupling as extension
+      # - South (flexion): 0.0 = highest independence (max makes non-zero irrelevant)
+      # - North (extension): 1.0 = coupling from extension
+      # - In/Out (lateral): 1.2 = lateral + bidirectional opposition risk
       direction_costs:
         Center: 0.0
-        South: 0.2
+        South: 0.0
         North: 1.0
         In: 1.0
         Out: 1.0
 
-      # Finger-pair coupling multipliers (symmetric - order doesn't matter)
-      # Research: Ring-Pinky 31-64%, Middle-Ring 37-52%, Index-Middle 21-28%
-      # Factors derived from coupling ratios normalized to Ring-Pinky
+      # Ordered finger-pair coupling multipliers
+      # Key: [first_finger, second_finger] - ORDER MATTERS
+      # The second finger is "enslaved" by the first; specify both directions
+      # Upper-bound research values: coupling% / 24.5% (Index-Middle baseline)
       finger_pair_factors:
-        [Ring, Pinky]: 1.5 # 31-64% coupling
-        [Middle, Ring]: 1.4 # 37-52% coupling
-        [Index, Middle]: 0.5 # 21-28% coupling
+        # Middle-Ring pair (37-52% coupling)
+        [Middle, Ring]: 2.5 # Ring enslaved (20-25% independence) - hardest
+        [Ring, Middle]: 1.8 # Middle enslaved (~31% independence)
+
+        # Ring-Pinky pair (31-64% coupling)
+        [Ring, Pinky]: 3.0 # Pinky enslaved - very constrained
+        [Pinky, Ring]: 2.2 # Ring enslaved
+
+        # Index-Middle pair (21-28% coupling) - optional
+        [Index, Middle]: 1.2 # Middle enslaved
+        [Middle, Index]: 1.0 # Index has high independence (61%)
 
   # =============================================================================
   # Trigram metrics

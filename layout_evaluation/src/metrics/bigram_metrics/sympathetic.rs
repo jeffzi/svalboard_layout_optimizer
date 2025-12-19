@@ -20,11 +20,24 @@
 //! Based on biomechanical research on finger coupling:
 //! - **Direction independence**: Flexion (South) > Center > Extension (North) ≈ Lateral (In/Out)
 //! - **Finger-pair coupling**: Ring-Pinky (31-64%) > Middle-Ring (37-52%) > Index-Middle (21-28%)
+//! - **Finger order matters**: The second finger in a bigram is "enslaved" by the first.
+//!   Middle→Ring (ring enslaved, 20-25% independence) is harder than Ring→Middle (~31%).
+//!
+//! ## Formula
+//!
+//! ```text
+//! cost = weight × max(direction_cost[dir1], direction_cost[dir2]) × finger_pair_factor
+//! ```
+//!
+//! The max formula reflects that the worst direction dominates - having one "easy" direction
+//! (flexion) doesn't reduce the conflict when fingers move in different directions.
 //!
 //! ## Configuration
 //!
-//! - `direction_costs`: Per-direction independence cost (lower = more independent)
-//! - `finger_pair_factors`: Per finger-pair coupling multipliers (symmetric lookup)
+//! - `direction_costs`: Per-direction cost (lower = more independent).
+//!   Suggested: Center (0.0), South (0.0), North (1.0), In (1.2), Out (1.2)
+//! - `finger_pair_factors`: Ordered finger-pair coupling multipliers.
+//!   Both directions must be specified explicitly (no fallback).
 
 use super::{is_adjacent_fingers, BigramMetric};
 
@@ -38,14 +51,15 @@ use serde::Deserialize;
 
 #[derive(Clone, Deserialize, Debug)]
 pub struct Parameters {
-    /// Per-direction independence cost (lower = more independent).
-    /// Formula uses cost[dir1] × cost[dir2], so independent movements reduce coupling.
-    /// Research suggests: Center (0.0) < South/flexion (0.2) < North/extension = In/Out/lateral (1.0)
+    /// Per-direction cost (lower = more independent).
+    /// Formula uses max(cost[dir1], cost[dir2]) - worst direction dominates.
+    /// Suggested: Center (0.0), South (0.0), North (1.0), In (1.2), Out (1.2)
     pub direction_costs: AHashMap<Direction, f64>,
 
-    /// Finger-pair coupling multipliers (symmetric - order doesn't matter).
+    /// Ordered finger-pair coupling multipliers.
+    /// Key is (first_finger, second_finger) - order matters!
+    /// Both directions must be specified (e.g., [Middle, Ring] AND [Ring, Middle]).
     /// Use 0.0 to disable a pair entirely.
-    /// Research suggests: Ring-Pinky (1.5) > Middle-Ring (1.4) > Index-Middle (can be disabled)
     #[serde(default)]
     pub finger_pair_factors: Option<AHashMap<(Finger, Finger), f64>>,
 }
@@ -56,17 +70,6 @@ pub struct Sympathetic {
     finger_pair_factors: Option<AHashMap<(Finger, Finger), f64>>,
 }
 
-/// Normalize finger pair to canonical order for symmetric lookup.
-/// Uses numeric index to ensure consistent ordering.
-#[inline]
-fn normalize_finger_pair(f1: Finger, f2: Finger) -> (Finger, Finger) {
-    if (f1 as u8) <= (f2 as u8) {
-        (f1, f2)
-    } else {
-        (f2, f1)
-    }
-}
-
 impl Sympathetic {
     pub fn new(params: &Parameters) -> Self {
         Self {
@@ -75,12 +78,14 @@ impl Sympathetic {
         }
     }
 
-    /// Lookup finger pair factor with symmetric key (order doesn't matter).
+    /// Lookup finger pair factor with ordered key (order matters).
+    /// The key is (first_finger, second_finger) in bigram sequence.
+    /// Research shows the second finger is "enslaved" by the first,
+    /// so Middle→Ring is harder than Ring→Middle.
     #[inline]
     fn finger_pair_factor(&self, f1: Finger, f2: Finger) -> f64 {
         if let Some(ref factors) = self.finger_pair_factors {
-            let key = normalize_finger_pair(f1, f2);
-            factors.get(&key).copied().unwrap_or(1.0)
+            factors.get(&(f1, f2)).copied().unwrap_or(1.0)
         } else {
             1.0
         }
@@ -122,13 +127,12 @@ impl BigramMetric for Sympathetic {
             return Some(0.0);
         }
 
-        // Direction cost: multiply both costs
-        // This naturally handles Center (0.0) as neutral, and reflects that
-        // independent movements (low cost) reduce coupling even when paired
-        // with high-coupling movements
+        // Direction cost: take the maximum of both costs
+        // The worst direction dominates - having one "easy" direction (flexion)
+        // doesn't reduce the conflict when fingers move in different directions
         let cost1 = self.direction_costs.get(&dir1).copied().unwrap_or(1.0);
         let cost2 = self.direction_costs.get(&dir2).copied().unwrap_or(1.0);
-        let direction_cost = cost1 * cost2;
+        let direction_cost = cost1.max(cost2);
 
         Some(weight * direction_cost * pair_factor)
     }
