@@ -133,11 +133,11 @@ impl BigramMetric for BigramStats {
                 let dir1 = k1.key.direction;
                 let dir2 = k2.key.direction;
 
-                // Non-sympathetic: different directions, neither is Center, not a scissor
-                let is_non_sympathetic = dir1 != dir2
-                    && dir1 != Direction::Center
-                    && dir2 != Direction::Center
-                    && !is_scissor_pair(dir1, dir2);
+                // Non-sympathetic: different directions, both must be "hard" (not Center/South), not a scissor
+                // Aligns with Sympathetic metric: flexion (South) is biomechanically independent
+                let is_hard = |d: Direction| d != Direction::Center && d != Direction::South;
+                let is_non_sympathetic =
+                    dir1 != dir2 && is_hard(dir1) && is_hard(dir2) && !is_scissor_pair(dir1, dir2);
 
                 if is_non_sympathetic {
                     non_sympathetic_weight += weight;

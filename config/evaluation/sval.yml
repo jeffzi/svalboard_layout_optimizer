@@ -166,12 +166,12 @@ metrics:
       value: 1.0
     params:
       # Per-direction cost (research-based)
-      # Formula: max(dir1_cost, dir2_cost) × pair_factor
-      # Worst direction dominates - "easy" direction doesn't reduce conflict
-      # - Center (home): 0.0 = neutral, no penalty with any direction
-      # - South (flexion): 0.0 = highest independence (max makes non-zero irrelevant)
+      # Formula: dir1_cost × dir2_cost × pair_factor
+      # Both directions must be "hard" for penalty - flexion doesn't create conflict
+      # - Center (home): 0.0 = neutral, zeroes out any pairing
+      # - South (flexion): 0.0 = highest independence, zeroes out any pairing
       # - North (extension): 1.0 = coupling from extension
-      # - In/Out (lateral): 1.2 = lateral + bidirectional opposition risk
+      # - In/Out (lateral): 1.0 = lateral movement coupling
       direction_costs:
         Center: 0.0
         South: 0.0
@@ -192,9 +192,9 @@ metrics:
         [Ring, Pinky]: 3.0 # Pinky enslaved - very constrained
         [Pinky, Ring]: 2.2 # Ring enslaved
 
-        # Index-Middle pair (21-28% coupling) - optional
-        [Index, Middle]: 1.2 # Middle enslaved
-        [Middle, Index]: 1.0 # Index has high independence (61%)
+        # Index-Middle pair (21-28% coupling) - disabled
+        [Index, Middle]: 0.0 # Middle enslaved
+        [Middle, Index]: 0.0 # Index has high independence (61%)
 
   # =============================================================================
   # Trigram metrics

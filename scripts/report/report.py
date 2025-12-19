@@ -576,6 +576,7 @@ def print_layout_panel(
     layout_lines: list[str],
     rank: int,
     layout_string: str,
+    total_cost: float | int | str,
     balance_stats: str,
     bigram_stats: str,
     trigram_stats: str,
@@ -610,9 +611,12 @@ def print_layout_panel(
     content_lines.append(f"[dim]\\[svg] {svg_path}[/dim]")
 
     content = "\n".join(content_lines)
+    score_str = (
+        f"{total_cost:.1f}" if isinstance(total_cost, float) else str(total_cost)
+    )
     panel = Panel(
         content,
-        title=f"[bold]#{rank}[/bold] {layout_string}",
+        title=f"[bold]#{rank}[/bold] ~ [bold cyan]{score_str}[/bold cyan] [dim]{layout_string}[/dim]",
         title_align="left",
         width=panel_width,
     )
@@ -672,11 +676,13 @@ def parse_diagrams(
         export_svg(layout_lines, svg_path)
 
         layout_rank += 1
+        total_cost: float | int | str = ""
         balance_stats = ""
         bigram_stats = ""
         trigram_stats = ""
         if layout_string in layout_to_record:
             rec = layout_to_record[layout_string]
+            total_cost = rec.get("Total Cost", "")
             hands_msg = rec.get("Hands Disbalance", "")
             fingers_msg = rec.get("Finger Disbalance", "")
             balance_stats = extract_balance(hands_msg, fingers_msg)
@@ -687,6 +693,7 @@ def parse_diagrams(
             layout_lines,
             layout_rank,
             layout_string,
+            total_cost,
             balance_stats,
             bigram_stats,
             trigram_stats,

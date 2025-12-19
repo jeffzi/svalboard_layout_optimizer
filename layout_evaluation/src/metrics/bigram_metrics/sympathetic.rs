@@ -26,11 +26,12 @@
 //! ## Formula
 //!
 //! ```text
-//! cost = weight × max(direction_cost[dir1], direction_cost[dir2]) × finger_pair_factor
+//! cost = weight × direction_cost[dir1] × direction_cost[dir2] × finger_pair_factor
 //! ```
 //!
-//! The max formula reflects that the worst direction dominates - having one "easy" direction
-//! (flexion) doesn't reduce the conflict when fingers move in different directions.
+//! The multiplication formula reflects that flexion (South) is so biomechanically independent
+//! that it doesn't create conflict regardless of what the adjacent finger does. Only when
+//! both directions are "hard" (extension/lateral) does a penalty apply.
 //!
 //! ## Configuration
 //!
@@ -52,7 +53,7 @@ use serde::Deserialize;
 #[derive(Clone, Deserialize, Debug)]
 pub struct Parameters {
     /// Per-direction cost (lower = more independent).
-    /// Formula uses max(cost[dir1], cost[dir2]) - worst direction dominates.
+    /// Formula uses cost[dir1] × cost[dir2] - both must be "hard" for penalty.
     /// Suggested: Center (0.0), South (0.0), North (1.0), In (1.2), Out (1.2)
     pub direction_costs: AHashMap<Direction, f64>,
 
@@ -127,12 +128,12 @@ impl BigramMetric for Sympathetic {
             return Some(0.0);
         }
 
-        // Direction cost: take the maximum of both costs
-        // The worst direction dominates - having one "easy" direction (flexion)
-        // doesn't reduce the conflict when fingers move in different directions
+        // Direction cost: multiply both costs
+        // Flexion (South) is biomechanically independent - doesn't create conflict.
+        // Only when both directions are "hard" (extension/lateral) does penalty apply.
         let cost1 = self.direction_costs.get(&dir1).copied().unwrap_or(1.0);
         let cost2 = self.direction_costs.get(&dir2).copied().unwrap_or(1.0);
-        let direction_cost = cost1.max(cost2);
+        let direction_cost = cost1 * cost2;
 
         Some(weight * direction_cost * pair_factor)
     }
