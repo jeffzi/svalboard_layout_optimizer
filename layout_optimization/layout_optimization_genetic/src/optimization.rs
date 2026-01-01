@@ -176,6 +176,12 @@ impl CrossoverOp<Vec<usize>> for MyCrossover {
             .zip(parents.iter().skip(1).cycle())
             .map(|(p1, p2)| {
                 let len = p1.len();
+
+                // Guard: if genome is too small for crossover, just return parent unchanged
+                if len < 2 {
+                    return p1.clone();
+                }
+
                 let mut offspring: Vec<Option<usize>> = vec![None; len];
 
                 // determine cycle and take from parent 1
@@ -212,11 +218,9 @@ pub type MySimulator = Simulator<
         usize,
         FitnessCalc,
         MaximizeSelector,
-        // PartiallyMappedCrossover,
-        // MyCrossover,
-        NoOpCrossover,
+        MyCrossover,
         SwapOrderMutator,
-        UniformReinserter, // we do not use an elitist reinserter due to performance reasons (non-parallelized evaluation)
+        UniformReinserter,
     >,
     GenerationLimit,
 >;
@@ -261,9 +265,7 @@ pub fn init_optimization(
                 params.selection_ratio,
                 params.num_individuals_per_parents,
             ))
-            // .with_crossover(PartiallyMappedCrossover::new())
-            // .with_crossover(MyCrossover::new())
-            .with_crossover(NoOpCrossover::new())
+            .with_crossover(MyCrossover::new())
             .with_mutation(SwapOrderMutator::new(params.mutation_rate))
             .with_reinsertion(UniformReinserter::new(params.reinsertion_ratio))
             .with_initial_population(initial_population)
