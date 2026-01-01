@@ -30,24 +30,6 @@ pub trait ScissorCompute<C: ScissorCategory>: Clone + Debug + Send + Sync {
     fn compute_cost(&self, k1: &LayerKey, k2: &LayerKey, layout: &Layout) -> Option<(f64, C)>;
 }
 
-/// Check if two keys represent adjacent non-thumb fingers on the same hand
-///
-/// Returns true if:
-/// - Not the same key with a modifier
-/// - Both on the same hand
-/// - Adjacent fingers (distance of 1)
-/// - Neither is a thumb
-#[inline]
-pub fn is_adjacent_fingers(k1: &LayerKey, k2: &LayerKey) -> bool {
-    use keyboard_layout::key::Finger;
-
-    !((k1 == k2 && k1.is_modifier.is_some())
-        || k1.key.hand != k2.key.hand
-        || k1.key.finger.distance(&k2.key.finger) != 1
-        || k1.key.finger == Finger::Thumb
-        || k2.key.finger == Finger::Thumb)
-}
-
 /// Classification of scissor movement types
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ScissorType {

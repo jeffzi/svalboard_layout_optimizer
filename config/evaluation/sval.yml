@@ -160,25 +160,11 @@ metrics:
 
   sympathetic:
     enabled: true
-    weight: 150.0
+    weight: 500.0
     normalization:
       type: weight_found
       value: 1.0
     params:
-      # Per-direction cost (research-based)
-      # Formula: dir1_cost × dir2_cost × pair_factor
-      # Both directions must be "hard" for penalty - flexion doesn't create conflict
-      # - Center (home): 0.0 = neutral, zeroes out any pairing
-      # - South (flexion): 0.0 = highest independence, zeroes out any pairing
-      # - North (extension): 1.0 = coupling from extension
-      # - In/Out (lateral): 1.0 = lateral movement coupling
-      direction_costs:
-        Center: 0.0
-        South: 0.0
-        North: 1.0
-        In: 1.0
-        Out: 1.0
-
       # Ordered finger-pair coupling multipliers
       # Key: [first_finger, second_finger] - ORDER MATTERS
       # The second finger is "enslaved" by the first; specify both directions

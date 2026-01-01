@@ -2,7 +2,7 @@
 //! This is informational only and not used for optimization.
 
 use super::{
-    is_adjacent_fingers,
+    has_coupling_conflict, is_adjacent_fingers,
     scissor_base::{classify_scissor, ScissorType},
     BigramMetric,
 };
@@ -33,18 +33,6 @@ pub struct BigramStats {
     ignore_thumbs: bool,
     ignore_modifiers: bool,
     ignore_movements: Vec<(Direction, Direction)>,
-}
-
-/// Returns true if this direction pair is a full scissor (handled by FSB/HSB).
-#[inline]
-fn is_scissor_pair(dir1: Direction, dir2: Direction) -> bool {
-    matches!(
-        (dir1, dir2),
-        (Direction::North, Direction::South)
-            | (Direction::South, Direction::North)
-            | (Direction::In, Direction::Out)
-            | (Direction::Out, Direction::In)
-    )
 }
 
 /// Format a percentage with up to 2 meaningful decimal places (strips trailing zeros)
@@ -133,11 +121,8 @@ impl BigramMetric for BigramStats {
                 let dir1 = k1.key.direction;
                 let dir2 = k2.key.direction;
 
-                // Non-sympathetic: different directions, both must be "hard" (not Center/South), not a scissor
-                // Aligns with Sympathetic metric: flexion (South) is biomechanically independent
-                let is_hard = |d: Direction| d != Direction::Center && d != Direction::South;
-                let is_non_sympathetic =
-                    dir1 != dir2 && is_hard(dir1) && is_hard(dir2) && !is_scissor_pair(dir1, dir2);
+                // Non-sympathetic: coupling conflict (matches Sympathetic metric)
+                let is_non_sympathetic = has_coupling_conflict(dir1, dir2);
 
                 if is_non_sympathetic {
                     non_sympathetic_weight += weight;

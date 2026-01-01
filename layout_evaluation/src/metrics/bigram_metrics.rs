@@ -1,10 +1,38 @@
 //! The `metrics` module provides a trait for bigram metrics.
-use keyboard_layout::layout::{LayerKey, Layout};
+use keyboard_layout::{
+    key::{Direction, Finger},
+    layout::{LayerKey, Layout},
+};
 
 use super::format_utils::{format_percentages, should_show_ngram, visualize_whitespace};
 use ordered_float::OrderedFloat;
 use priority_queue::DoublePriorityQueue;
 use std::{env, fmt};
+
+/// Check if two keys represent adjacent non-thumb fingers on the same hand
+///
+/// Returns true if:
+/// - Not the same key with a modifier
+/// - Both on the same hand
+/// - Adjacent fingers (distance of 1)
+/// - Neither is a thumb
+#[inline]
+pub fn is_adjacent_fingers(k1: &LayerKey, k2: &LayerKey) -> bool {
+    !((k1 == k2 && k1.is_modifier.is_some())
+        || k1.key.hand != k2.key.hand
+        || k1.key.finger.distance(&k2.key.finger) != 1
+        || k1.key.finger == Finger::Thumb
+        || k2.key.finger == Finger::Thumb)
+}
+
+/// Returns true if two different directions both create finger coupling.
+/// Based on research: extension (North) and lateral (In/Out) create coupling,
+/// while flexion (South) and rest (Center) are biomechanically independent.
+#[inline]
+pub fn has_coupling_conflict(dir1: Direction, dir2: Direction) -> bool {
+    let couples = |d| matches!(d, Direction::North | Direction::In | Direction::Out);
+    dir1 != dir2 && couples(dir1) && couples(dir2)
+}
 
 pub mod bigram_rolls;
 pub mod bigram_stats;
@@ -22,6 +50,7 @@ pub mod oxey_lsbs;
 pub mod oxey_sfbs;
 mod scissor_base;
 pub mod sfb;
+pub mod sympathetic;
 pub mod symmetric_handswitches;
 
 /// BigramMetric is a trait for metrics that iterates over weighted bigrams.

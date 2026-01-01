@@ -35,7 +35,8 @@
 //! - `critical_bigram_factor`: Multiplier for high-frequency bigrams (optional)
 
 use super::{
-    scissor_base::{is_adjacent_fingers, ScissorCategory, ScissorCompute, ScissorMetric},
+    is_adjacent_fingers,
+    scissor_base::{ScissorCategory, ScissorCompute, ScissorMetric},
     BigramMetric,
 };
 

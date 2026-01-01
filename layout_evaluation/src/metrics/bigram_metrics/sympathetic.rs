@@ -26,25 +26,22 @@
 //! ## Formula
 //!
 //! ```text
-//! cost = weight × direction_cost[dir1] × direction_cost[dir2] × finger_pair_factor
+//! cost = weight × finger_pair_factor  (only if both directions are "hard")
 //! ```
 //!
-//! The multiplication formula reflects that flexion (South) is so biomechanically independent
-//! that it doesn't create conflict regardless of what the adjacent finger does. Only when
-//! both directions are "hard" (extension/lateral) does a penalty apply.
+//! Only applies when both directions are "hard" (North/In/Out). Flexion (South) and
+//! rest (Center) are biomechanically independent and don't create coupling conflicts.
 //!
 //! ## Configuration
 //!
-//! - `direction_costs`: Per-direction cost (lower = more independent).
-//!   Suggested: Center (0.0), South (0.0), North (1.0), In (1.2), Out (1.2)
 //! - `finger_pair_factors`: Ordered finger-pair coupling multipliers.
 //!   Both directions must be specified explicitly (no fallback).
 
-use super::{is_adjacent_fingers, BigramMetric};
+use super::{has_coupling_conflict, is_adjacent_fingers, BigramMetric};
 
 use ahash::AHashMap;
 use keyboard_layout::{
-    key::{Direction, Finger},
+    key::Finger,
     layout::{LayerKey, Layout},
 };
 
@@ -52,11 +49,6 @@ use serde::Deserialize;
 
 #[derive(Clone, Deserialize, Debug)]
 pub struct Parameters {
-    /// Per-direction cost (lower = more independent).
-    /// Formula uses cost[dir1] × cost[dir2] - both must be "hard" for penalty.
-    /// Suggested: Center (0.0), South (0.0), North (1.0), In (1.2), Out (1.2)
-    pub direction_costs: AHashMap<Direction, f64>,
-
     /// Ordered finger-pair coupling multipliers.
     /// Key is (first_finger, second_finger) - order matters!
     /// Both directions must be specified (e.g., [Middle, Ring] AND [Ring, Middle]).
@@ -67,14 +59,13 @@ pub struct Parameters {
 
 #[derive(Clone, Debug)]
 pub struct Sympathetic {
-    direction_costs: AHashMap<Direction, f64>,
     finger_pair_factors: Option<AHashMap<(Finger, Finger), f64>>,
 }
+
 
 impl Sympathetic {
     pub fn new(params: &Parameters) -> Self {
         Self {
-            direction_costs: params.direction_costs.clone(),
             finger_pair_factors: params.finger_pair_factors.clone(),
         }
     }
@@ -115,26 +106,14 @@ impl BigramMetric for Sympathetic {
         let dir1 = k1.key.direction;
         let dir2 = k2.key.direction;
 
-        // Identical direction = sympathetic = zero cost
-        if dir1 == dir2 {
+        // Only penalize coupling conflicts (different directions, both "hard")
+        if !has_coupling_conflict(dir1, dir2) {
             return Some(0.0);
         }
 
-        // Get finger pair factor (symmetric lookup)
+        // Get finger pair factor (ordered lookup - second finger "enslaved" by first)
         let pair_factor = self.finger_pair_factor(k1.key.finger, k2.key.finger);
 
-        // If pair is disabled (factor = 0), skip
-        if pair_factor == 0.0 {
-            return Some(0.0);
-        }
-
-        // Direction cost: multiply both costs
-        // Flexion (South) is biomechanically independent - doesn't create conflict.
-        // Only when both directions are "hard" (extension/lateral) does penalty apply.
-        let cost1 = self.direction_costs.get(&dir1).copied().unwrap_or(1.0);
-        let cost2 = self.direction_costs.get(&dir2).copied().unwrap_or(1.0);
-        let direction_cost = cost1 * cost2;
-
-        Some(weight * direction_cost * pair_factor)
+        Some(weight * pair_factor)
     }
 }
