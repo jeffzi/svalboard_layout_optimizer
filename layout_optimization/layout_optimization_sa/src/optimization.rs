@@ -28,10 +28,6 @@ pub struct Parameters {
     /// Stop if there was no accepted solution after this many iterations
     pub stall_accepted: u64,
 
-    /// Reanneal (reset temperature) if no new best found after this many iterations.
-    /// Helps escape local minima. Set to null to disable.
-    pub reannealing_best: Option<u64>,
-
     // Parameters for the [Executor].
     /// Set maximum number of iterations (defaults to `std::u64::MAX`)
     pub max_iters: u64,
@@ -44,7 +40,6 @@ impl Default for Parameters {
             key_switches: 1,
             // Parameters for the solver.
             stall_accepted: 5000,
-            reannealing_best: Some(5000),
             // Parameters for the [Executor].
             max_iters: 100_000,
         }
@@ -325,7 +320,7 @@ pub fn optimize(
 
     // Create new SA solver with some parameters (see docs for details)
     // This essentially just prepares the SA solver. It is not run yet, nor does it know anything about the problem it is about to solve.
-    let mut solver = SimulatedAnnealing::new(init_temp)
+    let solver = SimulatedAnnealing::new(init_temp)
         .unwrap()
         // Optional: Define temperature function (defaults to `SATempFunc::TemperatureFast`)
         .with_temp_func(SATempFunc::Exponential(0.998))
@@ -334,11 +329,6 @@ pub fn optimize(
         /////////////////////////
         // Optional: stop if there was no accepted solution after [params.stall_accepted] iterations
         .with_stall_accepted(params.stall_accepted);
-
-    // Optional: Reannealing - reset temperature to escape local minima
-    if let Some(reannealing_iters) = params.reannealing_best {
-        solver = solver.with_reannealing_best(reannealing_iters);
-    }
 
     // Create and run the executor, which will apply the solver to the problem, given a starting point (`init_param`)
     let mut executor = Executor::new(problem, solver)

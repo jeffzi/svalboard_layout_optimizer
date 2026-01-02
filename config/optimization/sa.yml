@@ -11,10 +11,6 @@ key_switches: 1
 # Stop if there was no accepted solution after this many iterations
 stall_accepted: 5000
 
-# Reanneal (reset temperature) if no new best found after this many iterations.
-# Helps escape local minima. Set to null to disable.
-reannealing_best: 5000
-
 # Set maximum number of iterations (defaults to `std::u64::MAX`)
 # At first iterations might take a while, but eventually they will speed up due to caching.
 max_iters: 100000
