@@ -14,6 +14,7 @@ use genevo::{
     population::Population,
     prelude::*,
     random::SliceRandom,
+    selection::proportionate::RouletteWheelSelector,
     simulation::simulator::Simulator,
     types::fmt::Display,
 };
@@ -211,12 +212,10 @@ pub type MySimulator = Simulator<
         Vec<usize>,
         usize,
         FitnessCalc,
-        MaximizeSelector,
-        // PartiallyMappedCrossover,
-        // MyCrossover,
+        RouletteWheelSelector,
         NoOpCrossover,
         SwapOrderMutator,
-        UniformReinserter, // we do not use an elitist reinserter due to performance reasons (non-parallelized evaluation)
+        UniformReinserter,
     >,
     GenerationLimit,
 >;
@@ -257,12 +256,10 @@ pub fn init_optimization(
                 layout_generator: layout_generator.clone(),
                 result_cache,
             })
-            .with_selection(MaximizeSelector::new(
+            .with_selection(RouletteWheelSelector::new(
                 params.selection_ratio,
                 params.num_individuals_per_parents,
             ))
-            // .with_crossover(PartiallyMappedCrossover::new())
-            // .with_crossover(MyCrossover::new())
             .with_crossover(NoOpCrossover::new())
             .with_mutation(SwapOrderMutator::new(params.mutation_rate))
             .with_reinsertion(UniformReinserter::new(params.reinsertion_ratio))
