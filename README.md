@@ -148,6 +148,7 @@ The main metrics configuration is in [`config/evaluation/sval.yml`](config/evalu
 - **fsb**: Full Scissor Bigram metric that penalizes uncomfortable opposing movements between adjacent fingers (vertical, squeeze, splay)
 - **hsb**: Half Scissor Bigram metric that penalizes uncomfortable partial opposing movements between adjacent fingers (diagonal, lateral)
 - **manual_bigram_penalty**: Penalizes specific uncomfortable bigrams (e.g., pinky same-key repeats)
+- **sympathetic**: Penalizes adjacent finger bigrams where fingers move in different directions. Same-direction movements benefit from finger coupling (enslaving), while different directions create conflict
 - **bigram_stats**: Provides statistics on bigram categories like SFB, scissor types, and other movement patterns. Supports `ignore_movements` to exclude specific direction pairs (e.g., Center→South) from SFB count (informational, weight: 0)
 - **trigram_stats**: Tracks roll and redirect statistics. Supports `same_finger_rolls` to track specific same-finger movements (e.g., Center→South, In→South) separately within bigram rolls (informational, weight: 0)
 
@@ -187,6 +188,13 @@ The optimizer includes custom metrics optimized for the Svalboard's unique geome
   - Each movement type has configurable base costs
   - Optional finger multipliers (weaker fingers dominate)
   - Optional high-frequency bigram penalty multiplier
+
+- **sympathetic**: Penalizes adjacent finger bigrams where fingers move in different directions:
+
+  - Same-direction movements (e.g., South→South) benefit from finger coupling—enslaving helps
+  - Different directions create conflict—the second finger fights involuntary force
+  - Finger-pair coupling: Ring-Pinky > Middle-Ring > Index-Middle
+  - Center (rest position) is ignored since it's not an actual movement
 
 - **character_constraints**: Penalizes specific characters at specific matrix positions. Currently configured to:
   - Restrict common double letters (e, l, s, o, t, r, h, n, f, p) to comfortable positions (center/south preferred)

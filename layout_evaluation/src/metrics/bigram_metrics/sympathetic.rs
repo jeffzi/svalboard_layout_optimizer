@@ -6,31 +6,23 @@
 //! This works WITH the natural mechanical coupling of fingers (especially middle-ring and
 //! ring-pinky which share flexor digitorum profundus tendons).
 //!
-//! Adjacent fingers moving in **identical directions** are biomechanically comfortable:
-//! - `(North, North)` - both extending up
-//! - `(South, South)` - both flexing down
-//! - `(Center, Center)` - both at rest
-//! - `(In, In)` - both moving inward
-//! - `(Out, Out)` - both moving outward
-//!
-//! This metric **penalizes non-identical direction** movements between adjacent fingers.
+//! Adjacent fingers moving in **identical directions** are comfortable (enslaving helps).
+//! This metric **penalizes different direction** movements between adjacent fingers.
+//! Center (rest position) is ignored since it's not an actual movement.
 //!
 //! ## Research Basis
 //!
-//! Based on biomechanical research on finger coupling:
-//! - **Direction independence**: Flexion (South) > Center > Extension (North) ≈ Lateral (In/Out)
-//! - **Finger-pair coupling**: Ring-Pinky (31-64%) > Middle-Ring (37-52%) > Index-Middle (21-28%)
-//! - **Finger order matters**: The second finger in a bigram is "enslaved" by the first.
-//!   Middle→Ring (ring enslaved, 20-25% independence) is harder than Ring→Middle (~31%).
+//! Based on biomechanical research on finger enslaving (Zatsiorsky et al. 2000):
+//! - Adjacent fingers share flexor digitorum profundus tendons
+//! - When one finger moves, it involuntarily pulls adjacent fingers the same way
+//! - **Finger-pair coupling**: Ring-Pinky > Middle-Ring > Index-Middle
+//! - **Finger order matters**: The second finger is "enslaved" by the first
 //!
 //! ## Formula
 //!
 //! ```text
-//! cost = weight × finger_pair_factor  (only if both directions are "hard")
+//! cost = weight × finger_pair_factor  (if directions differ)
 //! ```
-//!
-//! Only applies when both directions are "hard" (North/In/Out). Flexion (South) and
-//! rest (Center) are biomechanically independent and don't create coupling conflicts.
 //!
 //! ## Configuration
 //!

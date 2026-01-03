@@ -25,13 +25,13 @@ pub fn is_adjacent_fingers(k1: &LayerKey, k2: &LayerKey) -> bool {
         || k2.key.finger == Finger::Thumb)
 }
 
-/// Returns true if two different directions both create finger coupling.
-/// Based on research: extension (North) and lateral (In/Out) create coupling,
-/// while flexion (South) and rest (Center) are biomechanically independent.
+/// Returns true if adjacent fingers move in different directions.
+/// Same-direction movements benefit from finger coupling (enslaving helps),
+/// while different directions create conflict (enslaving fights the second finger).
+/// Center (rest position) is ignored - not a movement.
 #[inline]
 pub fn has_coupling_conflict(dir1: Direction, dir2: Direction) -> bool {
-    let couples = |d| matches!(d, Direction::North | Direction::In | Direction::Out);
-    dir1 != dir2 && couples(dir1) && couples(dir2)
+    dir1 != dir2 && dir1 != Direction::Center && dir2 != Direction::Center
 }
 
 pub mod bigram_rolls;
