@@ -241,17 +241,24 @@ metrics:
       # key positions as matrix positions (from config/keyboard/sval.yml) and the corresponding costs
       # [from_position, to_position]: weight
       matrix_positions:
-        # Same-key repeats on pinky
-        [[2, 1], [2, 1]]: 1 # left pinky north
-        [[2, 2], [2, 2]]: 1 # left pinky center
-        [[2, 3], [2, 3]]: 1 # left pinky south
-        [[1, 2], [1, 2]]: 10 # left pinky west
-        [[3, 2], [3, 2]]: 10 # left pinky east
-        [[23, 1], [23, 1]]: 10 # right pinky north
-        [[23, 2], [23, 2]]: 1 # right pinky center
-        [[23, 3], [23, 3]]: 1 # right pinky south
-        [[22, 2], [22, 2]]: 10 # right pinky west
-        [[24, 2], [24, 2]]: 10 # right pinky east
+        # Left pinky
+        [[1, 2], [1, 2]]: 10 # west
+        [[2, 1], [2, 1]]: 10 # north
+        [[2, 2], [2, 2]]: 1 # center
+        [[2, 3], [2, 3]]: 1 # south
+        [[3, 2], [3, 2]]: 10 # east
+        # Left ring
+        [[4, 2], [4, 2]]: 10 # west
+        [[6, 2], [6, 2]]: 10 # east
+        # Right ring
+        [[19, 2], [19, 2]]: 10 # west
+        [[21, 2], [21, 2]]: 10 # east
+        # Right pinky
+        [[22, 2], [22, 2]]: 10 # west
+        [[23, 1], [23, 1]]: 10 # north
+        [[23, 2], [23, 2]]: 1 # center
+        [[23, 3], [23, 3]]: 1 # south
+        [[24, 2], [24, 2]]: 10 # east
 
   character_constraints:
     enabled: true
@@ -393,12 +400,12 @@ metrics:
           [2, 1]: 10 # north
           [2, 3]: 10 # south
           # Left ring
-          [6, 2]: 1 # west
-          [4, 2]: 1 # east
+          [6, 2]: 10 # west
+          [4, 2]: 10 # east
           [5, 1]: 10 # north
           # Right ring
-          [19, 2]: 1 # west
-          [21, 2]: 1 # east
+          [19, 2]: 10 # west
+          [21, 2]: 10 # east
           [20, 1]: 10 # north
           # Right pinky
           [22, 2]: 10 # west
@@ -412,12 +419,12 @@ metrics:
           [2, 1]: 10 # north
           [2, 3]: 10 # south
           # Left ring
-          [6, 2]: 1 # west
-          [4, 2]: 1 # east
+          [6, 2]: 10 # west
+          [4, 2]: 10 # east
           [5, 1]: 10 # north
           # Right ring
-          [19, 2]: 1 # west
-          [21, 2]: 1 # east
+          [19, 2]: 10 # west
+          [21, 2]: 10 # east
           [20, 1]: 10 # north
           # Right pinky
           [22, 2]: 10 # west
@@ -431,12 +438,12 @@ metrics:
           [2, 1]: 10 # north
           [2, 3]: 10 # south
           # Left ring
-          [6, 2]: 1 # west
-          [4, 2]: 1 # east
+          [6, 2]: 10 # west
+          [4, 2]: 10 # east
           [5, 1]: 10 # north
           # Right ring
-          [19, 2]: 1 # west
-          [21, 2]: 1 # east
+          [19, 2]: 10 # west
+          [21, 2]: 10 # east
           [20, 1]: 10 # north
           # Right pinky
           [22, 2]: 10 # west
