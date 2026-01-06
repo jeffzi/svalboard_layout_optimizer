@@ -451,19 +451,31 @@ metrics:
           [23, 1]: 10 # north
           [23, 3]: 10 # south
 
-        # === PUNCTUATION MARKS ===
+        # === PUNCTUATION MARKS (forbidden on left hand) ===
         ",":
           # Left pinky
           [2, 1]: 10 # north
+          [1, 2]: 10 # west
           [2, 2]: 10 # center
+          [3, 2]: 10 # east
+          [2, 3]: 10 # south
           # Left ring
+          [5, 1]: 10 # north
+          [4, 2]: 10 # west
           [5, 2]: 10 # center
+          [6, 2]: 10 # east
           [5, 3]: 10 # south
           # Left middle
+          [8, 1]: 10 # north
+          [7, 2]: 10 # west
           [8, 2]: 10 # center
+          [9, 2]: 10 # east
           [8, 3]: 10 # south
           # Left index
+          [11, 1]: 10 # north
+          [10, 2]: 10 # west
           [11, 2]: 10 # center
+          [12, 2]: 10 # east
           [11, 3]: 10 # south
           # Right index
           [14, 2]: 10 # center
@@ -480,15 +492,27 @@ metrics:
         ".":
           # Left pinky
           [2, 1]: 10 # north
+          [1, 2]: 10 # west
           [2, 2]: 10 # center
+          [3, 2]: 10 # east
+          [2, 3]: 10 # south
           # Left ring
+          [5, 1]: 10 # north
+          [4, 2]: 10 # west
           [5, 2]: 10 # center
+          [6, 2]: 10 # east
           [5, 3]: 10 # south
           # Left middle
+          [8, 1]: 10 # north
+          [7, 2]: 10 # west
           [8, 2]: 10 # center
+          [9, 2]: 10 # east
           [8, 3]: 10 # south
           # Left index
+          [11, 1]: 10 # north
+          [10, 2]: 10 # west
           [11, 2]: 10 # center
+          [12, 2]: 10 # east
           [11, 3]: 10 # south
           # Right index
           [14, 2]: 10 # center
@@ -504,15 +528,27 @@ metrics:
         "'":
           # Left pinky
           [2, 1]: 10 # north
+          [1, 2]: 10 # west
           [2, 2]: 10 # center
+          [3, 2]: 10 # east
+          [2, 3]: 10 # south
           # Left ring
+          [5, 1]: 10 # north
+          [4, 2]: 10 # west
           [5, 2]: 10 # center
+          [6, 2]: 10 # east
           [5, 3]: 10 # south
           # Left middle
+          [8, 1]: 10 # north
+          [7, 2]: 10 # west
           [8, 2]: 10 # center
+          [9, 2]: 10 # east
           [8, 3]: 10 # south
           # Left index
+          [11, 1]: 10 # north
+          [10, 2]: 10 # west
           [11, 2]: 10 # center
+          [12, 2]: 10 # east
           [11, 3]: 10 # south
           # Right index
           [14, 2]: 10 # center
@@ -529,15 +565,27 @@ metrics:
         "-":
           # Left pinky
           [2, 1]: 10 # north
+          [1, 2]: 10 # west
           [2, 2]: 10 # center
+          [3, 2]: 10 # east
+          [2, 3]: 10 # south
           # Left ring
+          [5, 1]: 10 # north
+          [4, 2]: 10 # west
           [5, 2]: 10 # center
+          [6, 2]: 10 # east
           [5, 3]: 10 # south
           # Left middle
+          [8, 1]: 10 # north
+          [7, 2]: 10 # west
           [8, 2]: 10 # center
+          [9, 2]: 10 # east
           [8, 3]: 10 # south
           # Left index
+          [11, 1]: 10 # north
+          [10, 2]: 10 # west
           [11, 2]: 10 # center
+          [12, 2]: 10 # east
           [11, 3]: 10 # south
           # Right index
           [14, 2]: 10 # center
@@ -554,15 +602,27 @@ metrics:
         "?":
           # Left pinky
           [2, 1]: 10 # north
+          [1, 2]: 10 # west
           [2, 2]: 10 # center
+          [3, 2]: 10 # east
+          [2, 3]: 10 # south
           # Left ring
+          [5, 1]: 10 # north
+          [4, 2]: 10 # west
           [5, 2]: 10 # center
+          [6, 2]: 10 # east
           [5, 3]: 10 # south
           # Left middle
+          [8, 1]: 10 # north
+          [7, 2]: 10 # west
           [8, 2]: 10 # center
+          [9, 2]: 10 # east
           [8, 3]: 10 # south
           # Left index
+          [11, 1]: 10 # north
+          [10, 2]: 10 # west
           [11, 2]: 10 # center
+          [12, 2]: 10 # east
           [11, 3]: 10 # south
           # Right index
           [14, 2]: 10 # center
