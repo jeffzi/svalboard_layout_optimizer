@@ -17,6 +17,7 @@
 //! - When one finger moves, it involuntarily pulls adjacent fingers the same way
 //! - **Finger-pair coupling**: Ring-Pinky > Middle-Ring > Index-Middle
 //! - **Finger order matters**: The second finger is "enslaved" by the first
+//! - **Index-Middle excluded**: Index has high independence (~61%), minimal coupling
 //!
 //! ## Formula
 //!
@@ -44,9 +45,16 @@ pub struct Parameters {
     /// Ordered finger-pair coupling multipliers.
     /// Key is (first_finger, second_finger) - order matters!
     /// Both directions must be specified (e.g., [Middle, Ring] AND [Ring, Middle]).
-    /// Use 0.0 to disable a pair entirely.
+    /// Index-Middle pairs cannot be configured (always disabled due to high independence).
     #[serde(default)]
     pub finger_pair_factors: Option<AHashMap<(Finger, Finger), f64>>,
+}
+
+/// Check if a finger pair is Index-Middle (in either order).
+/// These pairs are always excluded due to high index finger independence.
+#[inline]
+fn is_index_middle_pair(f1: Finger, f2: Finger) -> bool {
+    (f1 == Finger::Index && f2 == Finger::Middle) || (f1 == Finger::Middle && f2 == Finger::Index)
 }
 
 #[derive(Clone, Debug)]
@@ -54,9 +62,21 @@ pub struct Sympathetic {
     finger_pair_factors: Option<AHashMap<(Finger, Finger), f64>>,
 }
 
-
 impl Sympathetic {
     pub fn new(params: &Parameters) -> Self {
+        // Validate that no Index-Middle pairs are configured
+        if let Some(ref factors) = params.finger_pair_factors {
+            for (f1, f2) in factors.keys() {
+                if is_index_middle_pair(*f1, *f2) {
+                    panic!(
+                        "Index-Middle finger pairs cannot be configured in Sympathetic metric \
+                        (always disabled due to high index finger independence). \
+                        Remove [Index, Middle] and [Middle, Index] from finger_pair_factors."
+                    );
+                }
+            }
+        }
+
         Self {
             finger_pair_factors: params.finger_pair_factors.clone(),
         }
@@ -92,6 +112,11 @@ impl BigramMetric for Sympathetic {
     ) -> Option<f64> {
         // Only applies to adjacent fingers on the same hand (no thumbs)
         if !is_adjacent_fingers(k1, k2) {
+            return Some(0.0);
+        }
+
+        // Index-Middle pairs are always excluded (high index independence)
+        if is_index_middle_pair(k1.key.finger, k2.key.finger) {
             return Some(0.0);
         }
 

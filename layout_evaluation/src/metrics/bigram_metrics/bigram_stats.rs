@@ -116,16 +116,21 @@ impl BigramMetric for BigramStats {
                 }
             }
 
-            // Check for non-sympathetic movements (adjacent fingers)
+            // Check for non-sympathetic movements (adjacent fingers, excluding Index-Middle)
             if is_adjacent_fingers(k1, k2) {
-                let dir1 = k1.key.direction;
-                let dir2 = k2.key.direction;
+                // Index-Middle pairs are excluded (high index finger independence)
+                let is_index_middle = (k1.key.finger == Finger::Index
+                    && k2.key.finger == Finger::Middle)
+                    || (k1.key.finger == Finger::Middle && k2.key.finger == Finger::Index);
 
-                // Non-sympathetic: coupling conflict (matches Sympathetic metric)
-                let is_non_sympathetic = has_coupling_conflict(dir1, dir2);
+                if !is_index_middle {
+                    let dir1 = k1.key.direction;
+                    let dir2 = k2.key.direction;
 
-                if is_non_sympathetic {
-                    non_sympathetic_weight += weight;
+                    // Non-sympathetic: coupling conflict (matches Sympathetic metric)
+                    if has_coupling_conflict(dir1, dir2) {
+                        non_sympathetic_weight += weight;
+                    }
                 }
             }
         }
