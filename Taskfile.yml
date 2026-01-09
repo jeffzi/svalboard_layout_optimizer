@@ -17,6 +17,8 @@ tasks:
       IN_LAYOUT_FILE: "{{.IN_LAYOUT_FILE}}"
       OUT_LAYOUT_FILE: "{{.OUT_LAYOUT_FILE}}"
       CLI_ARGS: "{{.CLI_ARGS}}"
+      EVAL_CONFIG: '{{ .EVAL_CONFIG | default "config/evaluation/sval.yml" }}'
+      KEYBOARD_CONFIG: '{{ .KEYBOARD_CONFIG | default "config/keyboard/sval.yml" }}'
       IN_LAYOUTS:
         sh: |
           LAYOUTS=""
@@ -35,18 +37,32 @@ tasks:
     cmds:
       - |
         cargo run --release --bin optimize_sa -- \
-          --layout-config config/keyboard/sval.yml \
+          --layout-config "{{.KEYBOARD_CONFIG}}" \
+          --eval-parameters "{{.EVAL_CONFIG}}" \
           --ngrams ngrams/{{.NGRAMS}} \
           {{.IN_LAYOUTS}} \
           --append-solutions-to "{{.OUT_LAYOUT_FILE}}" \
           {{.CLI_ARGS}}
 
+  _check_typst:
+    internal: true
+    silent: true
+    cmds:
+      - |
+        if ! command -v typst >/dev/null 2>&1; then
+          echo "Note: typst not found. Install for better visualizations: https://typst.app/"
+          echo "      Falling back to Rich terminal-style SVGs."
+        fi
+
   _evaluate:
     internal: true
     desc: "Evaluate solutions into a CSV file"
+    deps: [_check_typst]
     vars:
       NGRAMS: "{{.NGRAMS}}"
       LAYOUT_FILE: "{{.LAYOUT_FILE}}"
+      EVAL_CONFIG: '{{ .EVAL_CONFIG | default "config/evaluation/sval.yml" }}'
+      KEYBOARD_CONFIG: '{{ .KEYBOARD_CONFIG | default "config/keyboard/sval.yml" }}'
       TEMP_DIR: "temp"
       FILTERED_LAYOUT_FILE: "{{.TEMP_DIR}}/filtered_layouts.txt"
       JSON_OUT:
@@ -72,7 +88,8 @@ tasks:
         done < "{{.LAYOUT_FILE}}" > "{{.FILTERED_LAYOUT_FILE}}"
       - |
         cargo run --release --bin evaluate -- \
-          --layout-config config/keyboard/sval.yml \
+          --layout-config "{{.KEYBOARD_CONFIG}}" \
+          --eval-parameters "{{.EVAL_CONFIG}}" \
           --ngrams ngrams/{{.NGRAMS}} \
           --from-file "{{.FILTERED_LAYOUT_FILE}}" \
           --sort \
@@ -80,11 +97,12 @@ tasks:
       - rm -rf "{{.EVAL_OUT}}"
       - |
         cargo run --release --bin evaluate -- \
-          --layout-config config/keyboard/sval.yml \
+          --layout-config "{{.KEYBOARD_CONFIG}}" \
+          --eval-parameters "{{.EVAL_CONFIG}}" \
           --ngrams ngrams/{{.NGRAMS}} \
           --from-file "{{.FILTERED_LAYOUT_FILE}}" \
           --sort > "{{.TXT_OUT}}"
-      - uv run --project scripts scripts/report/report.py "{{.JSON_OUT}}" --corpus "{{.NGRAMS}}" --out "{{.EVAL_OUT}}"
+      - uv run --project scripts/report scripts/report/report.py report "{{.JSON_OUT}}" --corpus "{{.NGRAMS}}" --out "{{.EVAL_OUT}}"
 
   # --- Public  ---------------------------------------------------------------
 
@@ -92,13 +110,16 @@ tasks:
     desc: |
       Optimize keyboard layouts then evaluate.
       Usage:
-        task optimize CORPUS=eng_fra /
+        task optimize CORPUS=eng_fra
         task optimize CORPUS=eng_fra IN_LAYOUT_FILE=layouts.txt -- --fix 'reoyaui'
+        task optimize CORPUS=eng_fra KEYBOARD_CONFIG=config/keyboard/alpha_sval.yml EVAL_CONFIG=config/evaluation/alpha_sval.yml
     vars:
       CORPUS: "{{.CORPUS}}"
       CLI_ARGS: "{{.CLI_ARGS}}"
       IN_LAYOUT_FILE: '{{ .IN_LAYOUT_FILE | default (print .CORPUS "_layouts.txt") }}'
       OUT_LAYOUT_FILE: '{{ .OUT_LAYOUT_FILE | default (print .CORPUS "_optimized_layouts.txt") }}'
+      EVAL_CONFIG: '{{ .EVAL_CONFIG | default "config/evaluation/sval.yml" }}'
+      KEYBOARD_CONFIG: '{{ .KEYBOARD_CONFIG | default "config/keyboard/sval.yml" }}'
     preconditions:
       - sh: test -f "{{.IN_LAYOUT_FILE}}"
         msg: |
@@ -116,20 +137,27 @@ tasks:
           IN_LAYOUT_FILE: "{{.IN_LAYOUT_FILE}}"
           OUT_LAYOUT_FILE: "{{.OUT_LAYOUT_FILE}}"
           CLI_ARGS: "{{.CLI_ARGS}}"
+          EVAL_CONFIG: "{{.EVAL_CONFIG}}"
+          KEYBOARD_CONFIG: "{{.KEYBOARD_CONFIG}}"
       - task: _evaluate
         vars:
           NGRAMS: "{{.CORPUS}}"
           LAYOUT_FILE: "{{.OUT_LAYOUT_FILE}}"
+          EVAL_CONFIG: "{{.EVAL_CONFIG}}"
+          KEYBOARD_CONFIG: "{{.KEYBOARD_CONFIG}}"
 
   evaluate:
     desc: |
       Evaluate an existing solutions file for the given corpus.
       Usage:
-        task evaluate CORPUS=eng_fra /
+        task evaluate CORPUS=eng_fra
         task evaluate CORPUS=eng_fra LAYOUT_FILE=optimized_layouts.txt
+        task evaluate CORPUS=eng_fra KEYBOARD_CONFIG=config/keyboard/alpha_sval.yml EVAL_CONFIG=config/evaluation/alpha_sval.yml
     vars:
       CORPUS: "{{.CORPUS}}"
       LAYOUT_FILE: '{{ .LAYOUT_FILE | default (print .CORPUS "_optimized_layouts.txt") }}'
+      EVAL_CONFIG: '{{ .EVAL_CONFIG | default "config/evaluation/sval.yml" }}'
+      KEYBOARD_CONFIG: '{{ .KEYBOARD_CONFIG | default "config/keyboard/sval.yml" }}'
     preconditions:
       - sh: test -f "{{.LAYOUT_FILE}}"
         msg: "Error: solutions file '{{.LAYOUT_FILE}}' not found. Run 'task optimize CORPUS={{.CORPUS}}' first or provide LAYOUT_FILE explicitly."
@@ -138,3 +166,5 @@ tasks:
         vars:
           NGRAMS: "{{.CORPUS}}"
           LAYOUT_FILE: "{{.LAYOUT_FILE}}"
+          EVAL_CONFIG: "{{.EVAL_CONFIG}}"
+          KEYBOARD_CONFIG: "{{.KEYBOARD_CONFIG}}"
