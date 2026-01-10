@@ -282,6 +282,9 @@ impl TrigramMetric for TrigramStats {
     ) -> (f64, Option<String>) {
         let mut category_weights: HashMap<TrigramCategory, f64> = HashMap::new();
         let mut same_finger_roll_weights: HashMap<(Direction, Direction), f64> = HashMap::new();
+        let mut center_south_roll_weight = 0.0;
+        let mut south_south_roll_weight = 0.0;
+        let mut center_center_roll_weight = 0.0;
         let mut weak_redirects_weight = 0.0;
         let mut sfs_weight = 0.0;
         let mut valid_trigrams_weight = 0.0;
@@ -315,6 +318,27 @@ impl TrigramMetric for TrigramStats {
                 if kb1.key.hand == kb2.key.hand && kb1.key.finger == kb2.key.finger {
                     if let Some(movement) = self.check_same_finger_roll(kb1, kb2) {
                         *same_finger_roll_weights.entry(movement).or_insert(0.0) += weight;
+                    }
+                }
+
+                // Track specific direction combinations for adjacent-finger rolls
+                if kb1.key.hand == kb2.key.hand && kb1.key.finger != kb2.key.finger {
+                    let dir1 = kb1.key.direction;
+                    let dir2 = kb2.key.direction;
+
+                    // Center<->South (either direction)
+                    if (dir1 == Direction::Center && dir2 == Direction::South)
+                        || (dir1 == Direction::South && dir2 == Direction::Center)
+                    {
+                        center_south_roll_weight += weight;
+                    }
+                    // South<->South
+                    else if dir1 == Direction::South && dir2 == Direction::South {
+                        south_south_roll_weight += weight;
+                    }
+                    // Center<->Center
+                    else if dir1 == Direction::Center && dir2 == Direction::Center {
+                        center_center_roll_weight += weight;
                     }
                 }
             }
@@ -391,6 +415,33 @@ impl TrigramMetric for TrigramStats {
                 ));
             }
         }
+
+        // Add direction-specific rolls (Center<->South, South<->South, Center<->Center)
+        let center_south_percentage = to_pct(center_south_roll_weight);
+        if center_south_percentage > 0.0 {
+            roll_2_parts.push(format!(
+                "{}: {:.1}%",
+                "Center<->South".underline(),
+                center_south_percentage
+            ));
+        }
+        let south_south_percentage = to_pct(south_south_roll_weight);
+        if south_south_percentage > 0.0 {
+            roll_2_parts.push(format!(
+                "{}: {:.1}%",
+                "South<->South".underline(),
+                south_south_percentage
+            ));
+        }
+        let center_center_percentage = to_pct(center_center_roll_weight);
+        if center_center_percentage > 0.0 {
+            roll_2_parts.push(format!(
+                "{}: {:.1}%",
+                "Center<->Center".underline(),
+                center_center_percentage
+            ));
+        }
+
         groups.push(roll_2_parts.join(", "));
 
         // 3-Roll group
