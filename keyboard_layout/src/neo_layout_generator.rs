@@ -129,6 +129,14 @@ impl NeoLayoutGenerator {
     /// This is useful for plotting unfinished or invalid layouts.
     pub fn generate_unchecked(&self, layout_keys: &str) -> Result<Layout> {
         let chars: Vec<char> = layout_keys.chars().collect();
+        let placeholder = self.placeholder.chars().next().unwrap_or('□');
+
+        // Collect all characters used in the layout string (excluding placeholder)
+        let used_chars: std::collections::HashSet<char> = chars
+            .iter()
+            .filter(|&&c| c != placeholder)
+            .copied()
+            .collect();
 
         // assemble a Vec<Vec<char>> representation of the layer for the given layout string
         let mut given_chars = chars.iter();
@@ -140,9 +148,20 @@ impl NeoLayoutGenerator {
             } else {
                 let given_char = given_chars.next();
                 if given_char.is_none() {
-                    // number of given layout keys are insufficient
-                    log::warn!("Number of given symbols in layout string is smaller than number of non-fixed keys");
-                    break;
+                    // No character provided for this position
+                    // Only use base_layout value if it's not already used elsewhere
+                    if let Some(&base_char) = key_layers.first() {
+                        if used_chars.contains(&base_char) {
+                            // Character already used, use placeholder
+                            key_chars.push(vec![placeholder]);
+                        } else {
+                            // Character not used, use base layout
+                            key_chars.push(key_layers.clone());
+                        }
+                    } else {
+                        key_chars.push(key_layers.clone());
+                    }
+                    continue;
                 }
                 let given_char = given_char.unwrap();
 
